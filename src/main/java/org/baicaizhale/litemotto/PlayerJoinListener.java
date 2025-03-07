@@ -6,6 +6,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -45,7 +46,7 @@ public class PlayerJoinListener implements Listener {
             // 发送 JSON 请求
             JSONObject requestBody = new JSONObject();
             requestBody.put("model", model);
-            requestBody.put("messages", new org.json.JSONArray().put(
+            requestBody.put("messages", new JSONArray().put(
                     new JSONObject().put("role", "user").put("content", "请生成一条简短的格言")
             ));
 
@@ -64,7 +65,14 @@ public class PlayerJoinListener implements Listener {
 
                 // 解析 JSON 响应
                 JSONObject jsonResponse = new JSONObject(response.toString());
-                return jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+                String motto = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+
+                // 去掉 "</think>" 前缀
+                if (motto.startsWith("</think>")) {
+                    motto = motto.substring(8).trim();
+                }
+
+                return motto;
             }
         } catch (Exception e) {
             Bukkit.getLogger().severe("获取格言失败: " + e.getMessage());
