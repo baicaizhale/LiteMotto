@@ -1,0 +1,2 @@
+api-key: "YOUR_API_KEY"
+model: "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"
