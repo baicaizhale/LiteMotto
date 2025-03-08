@@ -23,19 +23,21 @@ public class PlayerJoinListener implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(LiteMotto.getInstance(), () -> {
             String motto = fetchMottoFromDeepSeek();
             if (motto != null) {
-                player.sendMessage("§6今日格言: §f" + motto);
+                String prefix = LiteMotto.getInstance().getConfig().getString("prefix", "&6今日格言: &f");
+                player.sendMessage(colorize(prefix + motto));
             } else {
-                player.sendMessage("§c获取格言失败，请稍后再试。");
+                player.sendMessage(colorize("&c获取格言失败，请稍后再试。"));
             }
         });
     }
 
     private String fetchMottoFromDeepSeek() {
         try {
-            // 从 config.yml 读取账户 ID、API Key 和模型名称
+            // 从 config.yml 读取配置
             String accountId = LiteMotto.getInstance().getConfig().getString("account-id");
             String apiKey = LiteMotto.getInstance().getConfig().getString("api-key");
             String model = LiteMotto.getInstance().getConfig().getString("model");
+            String prompt = LiteMotto.getInstance().getConfig().getString("prompt", "请生成一条简短的格言");
 
             // 构造 API 请求 URL
             String apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + accountId + "/ai/v1/chat/completions";
@@ -50,7 +52,7 @@ public class PlayerJoinListener implements Listener {
             JSONObject requestBody = new JSONObject();
             requestBody.put("model", model);
             requestBody.put("messages", new JSONArray().put(
-                    new JSONObject().put("role", "user").put("content", "请生成一条简短的格言")
+                    new JSONObject().put("role", "user").put("content", prompt)
             ));
 
             try (OutputStream os = connection.getOutputStream()) {
@@ -75,11 +77,16 @@ public class PlayerJoinListener implements Listener {
                     motto = motto.substring(8).trim();
                 }
 
-                return motto;
+                return colorize(motto);
             }
         } catch (Exception e) {
             Bukkit.getLogger().severe("获取格言失败: " + e.getMessage());
             return null;
         }
+    }
+
+    // 颜色代码转换方法：将 & 替换成 §
+    private String colorize(String message) {
+        return message.replace("&", "§");
     }
 }
