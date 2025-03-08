@@ -7,7 +7,7 @@ api-key: "8Dymw2YgadUf2pObmOmu-W_pkFvC1HmulkBSc7pV"  # Cloudflare API Key
 model: "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"
 
 # 发送给 AI 的提示词
-prompt: "请生成一条简短的格言，作为api使用，请不要包含格言本体以外的内容"
+prompt: "请直接返回一句有哲理的格言，不要包含任何前后缀、标点、额外的文字或解释。"
 
 # 玩家收到消息的前缀，支持&和§变色符
 prefix: "§6今日格言: §f"
