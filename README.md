@@ -18,7 +18,7 @@ LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器
 将 `LiteMotto.jar` 复制到 `plugins/` 文件夹。
 
 ### **3. 启动服务器**
-运行 `start.bat` 或 `start.sh` 启动服务器，插件会自动生成 `config.yml` 配置文件。
+启动服务器，插件会自动生成 `config.yml` 配置文件；或者您也可以使用 `Plugman-X` 进行热加载。
 
 ### **4. 配置插件**
 打开 `plugins/LiteMotto/config.yml` 并填入 Cloudflare API 信息（不会可无视）
