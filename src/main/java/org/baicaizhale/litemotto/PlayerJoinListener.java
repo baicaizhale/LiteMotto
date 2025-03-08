@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 public class PlayerJoinListener implements Listener {
-    private static final String API_URL = "https://api.cloudflare.com/client/v4/accounts/867520dfa43947e67f0416d72989a2af/ai/v1/chat/completions";
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -33,10 +32,14 @@ public class PlayerJoinListener implements Listener {
 
     private String fetchMottoFromDeepSeek() {
         try {
+            // 从 config.yml 读取账户 ID、API Key 和模型名称
+            String accountId = LiteMotto.getInstance().getConfig().getString("account-id");
             String apiKey = LiteMotto.getInstance().getConfig().getString("api-key");
             String model = LiteMotto.getInstance().getConfig().getString("model");
 
-            URL url = new URL(API_URL);
+            // 构造 API 请求 URL
+            String apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + accountId + "/ai/v1/chat/completions";
+            URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
