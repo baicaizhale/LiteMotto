@@ -6,7 +6,7 @@
 
     <groupId>org.baicaizhale</groupId>
     <artifactId>litemotto</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>litemotto</name>
@@ -38,6 +38,13 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.json:json:META-INF/MANIFEST.MF</exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -65,7 +72,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <version>[1.18-R0.1,1.21-R0.1]</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
