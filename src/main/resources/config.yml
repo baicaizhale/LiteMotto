@@ -4,7 +4,7 @@ account-id: "e607239dba3500c1a85a15d9c37c90d6"  # Cloudflare 账户 ID
 api-key: "8Dymw2YgadUf2pObmOmu-W_pkFvC1HmulkBSc7pV"  # Cloudflare API Key
 
 # model无需修改
-model: "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"
+model: "@cf/meta/llama-3-8b-instruct"
 
 # 发送给 AI 的提示词
 prompt: "请直接返回一句有哲理的格言，不要思考，也不要包含任何前后缀、标点、额外的文字或解释。"
