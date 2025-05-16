@@ -1,6 +1,6 @@
 package org.baicaizhale.litemotto;
 
-import org.bstats.bukkit.Metrics; // 添加 bStats 导入
+import org.baicaizhale.litemotto.Metrics.Metrics; // 添加 bStats 导入
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LiteMotto extends JavaPlugin {
