@@ -1,5 +1,6 @@
 package org.baicaizhale.litemotto;
 
+import org.bstats.bukkit.Metrics; // 添加 bStats 导入
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LiteMotto extends JavaPlugin {
@@ -10,6 +11,11 @@ public class LiteMotto extends JavaPlugin {
         instance = this;
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         saveDefaultConfig();
+
+        // 初始化 bStats
+        int pluginId = 25873; // bStats 插件 ID
+        Metrics metrics = new Metrics(this, pluginId);
+
     }
 
     @Override
