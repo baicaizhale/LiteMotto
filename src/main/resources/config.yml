@@ -1,5 +1,5 @@
 # 请修改为你的Cloudflare账户ID和API Key
-# 以下示例key是有效的，但是请不要使用它们，Tokens可能被撤销
+# 以下示例key是有效的，但是请不要使用它们，Key可能被撤销
 account-id: "e607239dba3500c1a85a15d9c37c90d6"  # Cloudflare 账户 ID
 api-key: "8Dymw2YgadUf2pObmOmu-W_pkFvC1HmulkBSc7pV"  # Cloudflare API Key
 
