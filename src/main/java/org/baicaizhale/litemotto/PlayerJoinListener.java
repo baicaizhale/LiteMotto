@@ -33,6 +33,7 @@ public class PlayerJoinListener implements Listener {
     }
 
     private String fetchMottoFromDeepSeek() {
+        String lastResponse = null; // 用于异常时打印完整响应
         try {
             // 从 config.yml 读取配置
             String accountId = LiteMotto.getInstance().getConfig().getString("account-id");
@@ -84,14 +85,36 @@ public class PlayerJoinListener implements Listener {
                 while ((responseLine = br.readLine()) != null) {
                     response.append(responseLine.trim());
                 }
-                JSONObject jsonResponse = new JSONObject(response.toString());
-                String motto;
+                lastResponse = response.toString();
+                JSONObject jsonResponse = new JSONObject(lastResponse);
+                // 优先判断 errors 字段
+                if (jsonResponse.has("errors") && jsonResponse.getJSONArray("errors").length() > 0) {
+                    throw new Exception("Cloudflare API 错误: " + jsonResponse.getJSONArray("errors").toString());
+                }
+                String motto = null;
                 if (isGptOss120b) {
-                    // gpt-oss-120b 返回 result.response
-                    if (jsonResponse.has("result") && jsonResponse.getJSONObject("result").has("response")) {
-                        motto = jsonResponse.getJSONObject("result").getString("response");
+                    // gpt-oss-120b 返回 result.output，需解析 output_text
+                    if (jsonResponse.has("result") && jsonResponse.getJSONObject("result").has("output")) {
+                        JSONArray outputArr = jsonResponse.getJSONObject("result").getJSONArray("output");
+                        for (int i = 0; i < outputArr.length(); i++) {
+                            JSONObject outputObj = outputArr.getJSONObject(i);
+                            if (outputObj.has("type") && "message".equals(outputObj.getString("type")) && outputObj.has("content")) {
+                                JSONArray contentArr = outputObj.getJSONArray("content");
+                                for (int j = 0; j < contentArr.length(); j++) {
+                                    JSONObject contentObj = contentArr.getJSONObject(j);
+                                    if (contentObj.has("type") && "output_text".equals(contentObj.getString("type")) && contentObj.has("text")) {
+                                        motto = contentObj.getString("text");
+                                        break;
+                                    }
+                                }
+                            }
+                            if (motto != null) break;
+                        }
+                        if (motto == null) {
+                            throw new Exception("API 响应未找到 output_text 字段, 原始响应: " + lastResponse);
+                        }
                     } else {
-                        throw new Exception("API 响应缺少 result.response 字段");
+                        throw new Exception("API 响应缺少 result.output 字段, 原始响应: " + lastResponse);
                     }
                 } else {
                     // 其它模型返回 choices[0].message.content
@@ -105,6 +128,9 @@ public class PlayerJoinListener implements Listener {
             }
         } catch (Exception e) {
             Bukkit.getLogger().severe("获取格言失败: " + e.getMessage());
+            if (lastResponse != null) {
+                Bukkit.getLogger().severe("Cloudflare 原始响应: " + lastResponse);
+            }
             return null;
         }
     }

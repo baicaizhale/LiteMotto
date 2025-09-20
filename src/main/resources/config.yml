@@ -3,7 +3,7 @@
 account-id: "e607239dba3500c1a85a15d9c37c90d6"  # Cloudflare 账户 ID
 api-key: "8Dymw2YgadUf2pObmOmu-W_pkFvC1HmulkBSc7pV"  # Cloudflare API Key
 
-# model无需修改
+# model无需修改 (不同的模型可能导致奇奇怪怪的bug,如果遇到不兼容模型请提交issue)
 model: "@cf/openai/gpt-oss-120b"
 
 # 发送给 AI 的提示词
