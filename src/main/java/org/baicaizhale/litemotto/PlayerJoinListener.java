@@ -1,4 +1,4 @@
-package org.baicaizhale.litemotto; // 确保和文件夹名匹配
+package org.baicaizhale.litemotto;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +25,7 @@ public class PlayerJoinListener implements Listener {
             if (motto != null) {
                 String prefix = LiteMotto.getInstance().getConfig().getString("prefix", "&6今日格言: &f");
                 player.sendMessage(colorize(prefix + motto));
+                LiteMotto.getRecentMottoManager().addMotto(motto); // 保存格言
             } else {
                 player.sendMessage(colorize("&c获取格言失败，请稍后再试。"));
             }
@@ -39,6 +40,16 @@ public class PlayerJoinListener implements Listener {
             String model = LiteMotto.getInstance().getConfig().getString("model");
             String prompt = LiteMotto.getInstance().getConfig().getString("prompt", "请生成一条简短的格言");
 
+            // 拼接最近格言，提示AI不要重复
+            StringBuilder avoidBuilder = new StringBuilder();
+            for (String recent : LiteMotto.getRecentMottoManager().getRecentMottos()) {
+                avoidBuilder.append("「").append(recent).append("」, ");
+            }
+            String avoidText = avoidBuilder.length() > 0
+                    ? "请不要生成以下内容：" + avoidBuilder.toString() + "。"
+                    : "";
+            String finalPrompt = prompt + (avoidText.isEmpty() ? "" : "\n" + avoidText);
+
             // 构造 API 请求 URL
             String apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + accountId + "/ai/v1/chat/completions";
             URL url = new URL(apiUrl);
@@ -52,7 +63,7 @@ public class PlayerJoinListener implements Listener {
             JSONObject requestBody = new JSONObject();
             requestBody.put("model", model);
             requestBody.put("messages", new JSONArray().put(
-                    new JSONObject().put("role", "user").put("content", prompt)
+                    new JSONObject().put("role", "user").put("content", finalPrompt)
             ));
 
             try (OutputStream os = connection.getOutputStream()) {
