@@ -1,13 +1,13 @@
 # 请修改为你的Cloudflare账户ID和API Key
-# 以下示例key是有效的，但是请不要使用它们，Key可能被撤销
+# 以下示例key是有效的，但是最好不要使用它们，Key可能被撤销，也可能因为超过免费额度而无法生成
 account-id: "e607239dba3500c1a85a15d9c37c90d6"  # Cloudflare 账户 ID
 api-key: "8Dymw2YgadUf2pObmOmu-W_pkFvC1HmulkBSc7pV"  # Cloudflare API Key
 
 # model无需修改
-model: "@cf/meta/llama-3-8b-instruct"
+model: "@cf/openai/gpt-oss-120b"
 
 # 发送给 AI 的提示词
 prompt: "请直接返回一句有哲理的格言，不要思考，也不要包含任何前后缀、标点、额外的文字或解释。"
 
 # 玩家收到消息的前缀，支持&和§变色符
-prefix: "§6今日格言: §f"
+prefix: "§bLiteMotto §7> §f"

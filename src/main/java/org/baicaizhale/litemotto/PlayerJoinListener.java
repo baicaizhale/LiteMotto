@@ -50,8 +50,22 @@ public class PlayerJoinListener implements Listener {
                     : "";
             String finalPrompt = prompt + (avoidText.isEmpty() ? "" : "\n" + avoidText);
 
-            // 构造 API 请求 URL
-            String apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + accountId + "/ai/v1/chat/completions";
+            boolean isGptOss120b = model != null && model.toLowerCase().contains("gpt-oss-120b");
+            String apiUrl;
+            JSONObject requestBody = new JSONObject();
+            if (isGptOss120b) {
+                // gpt-oss-120b 走 run 接口，input 格式
+                apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + accountId + "/ai/run/@cf/openai/gpt-oss-120b";
+                requestBody.put("input", finalPrompt);
+            } else {
+                // 其它模型走 chat/completions
+                apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + accountId + "/ai/v1/chat/completions";
+                requestBody.put("model", model);
+                requestBody.put("messages", new JSONArray().put(
+                        new JSONObject().put("role", "user").put("content", finalPrompt)
+                ));
+            }
+
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -59,33 +73,32 @@ public class PlayerJoinListener implements Listener {
             connection.setRequestProperty("Authorization", "Bearer " + apiKey);
             connection.setDoOutput(true);
 
-            // 发送 JSON 请求
-            JSONObject requestBody = new JSONObject();
-            requestBody.put("model", model);
-            requestBody.put("messages", new JSONArray().put(
-                    new JSONObject().put("role", "user").put("content", finalPrompt)
-            ));
-
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = requestBody.toString().getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
-            // 读取 API 响应
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder response = new StringBuilder();
                 String responseLine;
                 while ((responseLine = br.readLine()) != null) {
                     response.append(responseLine.trim());
                 }
-
-                // 解析 JSON 响应
                 JSONObject jsonResponse = new JSONObject(response.toString());
-                String motto = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
-
-                // 去掉 "</think>" 前缀
-                if (motto.startsWith("</think>")) {
-                    motto = motto.substring(8).trim();
+                String motto;
+                if (isGptOss120b) {
+                    // gpt-oss-120b 返回 result.response
+                    if (jsonResponse.has("result") && jsonResponse.getJSONObject("result").has("response")) {
+                        motto = jsonResponse.getJSONObject("result").getString("response");
+                    } else {
+                        throw new Exception("API 响应缺少 result.response 字段");
+                    }
+                } else {
+                    // 其它模型返回 choices[0].message.content
+                    motto = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+                    if (motto.startsWith("</think>")) {
+                        motto = motto.substring(8).trim();
+                    }
                 }
 
                 return colorize(motto);
