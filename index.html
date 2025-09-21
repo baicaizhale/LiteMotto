@@ -1,0 +1,1423 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteMotto - AI驱动的Minecraft每日格言</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --color-primary: #1f2937;
+            --color-secondary: #374151;
+            --color-accent: #3b82f6;
+            --color-accent-hover: #2563eb;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-bg: #ffffff;
+            --color-bg-alt: #f9fafb;
+            --color-border: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .toc-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--color-bg-alt);
+            border-right: 1px solid var(--color-border);
+            overflow-y: auto;
+            z-index: 50;
+            padding: 2rem 1.5rem;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .toc-link {
+            display: block;
+            padding: 0.5rem 0;
+            color: var(--color-text-light);
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            padding-left: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .toc-link:hover,
+        .toc-link.active {
+            color: var(--color-accent);
+            border-left-color: var(--color-accent);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .toc-link.level-2 {
+            padding-left: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .toc-link.level-3 {
+            padding-left: 3rem;
+            font-size: 0.85rem;
+        }
+
+        .section-anchor {
+            scroll-margin-top: 2rem;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .bento-item {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .citation-link {
+            color: var(--color-accent);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px dotted var(--color-accent);
+        }
+
+        .citation-link:hover {
+            color: var(--color-accent-hover);
+            border-bottom-style: solid;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .code-block {
+            background: var(--color-primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .installation-step {
+            background: var(--color-bg-alt);
+            border-left: 4px solid var(--color-accent);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .config-highlight {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        /* Mermaid chart styling */
+        .mermaid-container {
+            display: flex;
+            justify-content: center;
+            min-height: 300px;
+            max-height: 800px;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mermaid-container .mermaid {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .mermaid-container .mermaid svg {
+            max-width: 100%;
+            height: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .mermaid-container .mermaid:active {
+            cursor: grabbing;
+        }
+
+        .mermaid-container.zoomed .mermaid {
+            height: 100%;
+            width: 100%;
+            cursor: grab;
+        }
+
+        .mermaid-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mermaid-control-btn {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #374151;
+            font-size: 14px;
+            min-width: 36px;
+            height: 36px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mermaid-control-btn:hover {
+            background: #f8fafc;
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .mermaid-control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Enhanced Mermaid theme customization for better contrast and unified styling */
+        .mermaid .node rect,
+        .mermaid .node circle,
+        .mermaid .node ellipse,
+        .mermaid .node polygon {
+            stroke-width: 2px !important;
+        }
+
+        .mermaid .node .label {
+            font-weight: 500 !important;
+            font-size: 14px !important;
+        }
+
+        .mermaid .edgeLabel {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            padding: 4px 8px !important;
+            border-radius: 4px !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Specific node color overrides for better contrast */
+        .mermaid .node[id*="A"] rect { fill: #1f2937 !important; }
+        .mermaid .node[id*="B"] rect { fill: #3b82f6 !important; }
+        .mermaid .node[id*="C"] rect { fill: #10b981 !important; }
+        .mermaid .node[id*="D"] rect { fill: #f59e0b !important; }
+        .mermaid .node[id*="E"] rect { fill: #8b5cf6 !important; }
+        .mermaid .node[id*="F"] rect { fill: #ef4444 !important; }
+        .mermaid .node[id*="G"] rect { fill: #06b6d4 !important; }
+        .mermaid .node[id*="H"] rect { fill: #84cc16 !important; }
+        .mermaid .node[id*="I"] rect { fill: #ec4899 !important; }
+
+        /* Ensure text contrast for all node types */
+        .mermaid .node .label {
+            color: #ffffff !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* Edge styling for better visibility */
+        .mermaid .edgePath path {
+            stroke: #6b7280 !important;
+            stroke-width: 2px !important;
+        }
+
+        .mermaid .arrowheadPath {
+            fill: #6b7280 !important;
+        }
+
+        @media (max-width: 1024px) {
+            .toc-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .toc-sidebar.mobile-open {
+                transform: translateX(0);
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mermaid-control-btn:not(.reset-zoom) {
+                display: none;
+            }
+            .mermaid-controls {
+                top: auto;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .toc-sidebar {
+                transform: none !important;
+                box-shadow: none !important;
+            }
+
+            .main-content {
+                margin-left: 280px;
+            }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 767px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .hero-gradient h1 {
+                font-size: 2.25rem;
+            }
+            .hero-gradient p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+<!-- Mobile TOC Toggle -->
+<button id="mobile-toc-toggle" class="fixed top-4 left-4 z-50 lg:hidden bg-white p-2 rounded-lg shadow-lg">
+    <i class="fas fa-bars text-gray-600"></i>
+</button>
+
+<!-- Table of Contents Sidebar -->
+<nav class="toc-sidebar" id="toc-sidebar">
+    <div class="mb-8">
+        <h3 class="serif text-lg font-bold text-gray-800 mb-4">目录导航</h3>
+    </div>
+
+    <a href="#overview" class="toc-link">插件概述</a>
+    <a href="#core-features" class="toc-link">核心功能</a>
+    <a href="#ai-generation" class="toc-link level-2">AI格言生成</a>
+    <a href="#customization" class="toc-link level-2">高度可定制</a>
+    <a href="#performance" class="toc-link level-2">异步性能</a>
+    <a href="#model-adaptation" class="toc-link level-2">模型适配</a>
+
+    <a href="#installation" class="toc-link">安装部署</a>
+    <a href="#requirements" class="toc-link level-2">环境要求</a>
+    <a href="#installation-steps" class="toc-link level-2">安装步骤</a>
+    <a href="#hotload" class="toc-link level-2">热加载支持</a>
+
+    <a href="#configuration" class="toc-link">配置文件</a>
+    <a href="#config-structure" class="toc-link level-2">文件结构</a>
+    <a href="#api-config" class="toc-link level-2">API配置</a>
+    <a href="#model-selection" class="toc-link level-2">模型选择</a>
+    <a href="#prompt-customization" class="toc-link level-2">提示词定制</a>
+    <a href="#prefix-styling" class="toc-link level-2">前缀样式</a>
+
+    <a href="#faq" class="toc-link">常见问题</a>
+    <a href="#duplicate-content" class="toc-link level-2">内容重复</a>
+    <a href="#api-issues" class="toc-link level-2">API问题</a>
+    <a href="#style-customization" class="toc-link level-2">风格定制</a>
+    <a href="#color-codes" class="toc-link level-2">颜色代码</a>
+
+    <a href="#development" class="toc-link">开发贡献</a>
+    <a href="#source-code" class="toc-link level-2">源码仓库</a>
+    <a href="#contributing" class="toc-link level-2">贡献指南</a>
+    <a href="#disclaimer" class="toc-link level-2">项目声明</a>
+</nav>
+
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="bento-grid">
+                <div class="bento-item bg-white/10 backdrop-blur-sm border border-white/20">
+                    <h1 class="serif text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+                        <em>LiteMotto</em>
+                        <br>
+                        <span class="text-2xl lg:text-3xl font-normal">AI驱动的Minecraft每日格言插件</span>
+                    </h1>
+                    <p class="text-lg lg:text-xl text-white/90 mb-8">
+                        通过Cloudflare AI服务，为Spigot服务器玩家呈现富有哲思的每日格言，提升游戏体验
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="https://github.com/baicaizhale/LiteMotto" class="bg-white text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                            <i class="fab fa-github mr-2"></i>GitHub仓库
+                        </a>
+                        <a href="https://baicaizhale.icu/notes?LiteMotto/" class="bg-white text-purple-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-download mr-2"></i>插件文档
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bento-item bg-white/10 backdrop-blur-sm border border-white/20">
+                    <h3 class="serif text-2xl font-bold mb-4">核心优势</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <i class="fas fa-robot text-blue-300 mr-3"></i>
+                            <span>AI驱动的内容生成</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-palette text-green-300 mr-3"></i>
+                            <span>高度可定制的消息格式</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-bolt text-yellow-300 mr-3"></i>
+                            <span>异步数据获取，优化性能</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-cogs text-purple-300 mr-3"></i>
+                            <span>自动适配多种AI模型</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Sections -->
+    <div class="container mx-auto px-6 py-12">
+
+        <!-- Overview Section -->
+        <section id="overview" class="section-anchor mb-16">
+            <h2 class="serif text-3xl font-bold mb-8 text-gray-800">插件概述与核心功能</h2>
+
+            <div class="prose max-w-none">
+                <p class="text-lg text-gray-600 mb-6">
+                    LiteMotto是一款专为Minecraft Spigot服务器设计的轻量级插件，其核心功能是在玩家加入服务器时，通过调用Cloudflare AI服务，为玩家呈现一句每日格言<a href="https://www.minebbs.com/resources/authors/baicaizhale.46406/" class="citation-link">[1]</a>。该插件旨在为服务器增添一丝趣味性和哲思，提升玩家的入服体验。
+                </p>
+
+                <div class="feature-card">
+                    <h3 class="serif text-xl font-semibold mb-4 text-gray-800">设计理念</h3>
+                    <p class="text-gray-600">
+                        作为一个开源项目，LiteMotto的源代码托管于GitHub，允许开发者自由查看、修改和贡献<a href="https://www.minebbs.com/resources/authors/baicaizhale.46406/" class="citation-link">[7]</a>。插件的设计理念是"简易"，力求在提供核心功能的同时，保持配置的简洁性和对服务器性能的最小影响。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Features Section -->
+        <section id="core-features" class="section-anchor mb-16">
+            <h2 class="serif text-3xl font-bold mb-8 text-gray-800">核心功能特性</h2>
+
+            <!-- AI Generation -->
+            <div id="ai-generation" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">AI驱动的每日格言生成</h3>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800">
+                            <i class="fas fa-brain text-blue-500 mr-2"></i>智能内容生成
+                        </h4>
+                        <p class="text-gray-600">
+                            LiteMotto的核心亮点在于其利用Cloudflare AI的强大能力来生成每日格言<a href="https://www.minebbs.com/resources/litemotto.11357/" class="citation-link">[2]</a>。与传统的预设格言列表不同，AI生成的内容具有极高的多样性和新颖性。
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800">
+                            <i class="fas fa-microchip text-purple-500 mr-2"></i>多模型支持
+                        </h4>
+                        <p class="text-gray-600">
+                            插件支持调用Cloudflare AI平台上的多种先进模型，例如@cf/openai/gpt-oss-120b和@cf/meta/llama-3-8b-instruct<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                    <h4 class="font-semibold text-blue-800 mb-2">推荐模型</h4>
+                    <p class="text-blue-700">
+                        <code>@cf/openai/gpt-oss-120b</code>是插件作者推荐的模型，具备强大的自然语言理解和生成能力，能够创作出富有哲理、引人深思的格言。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Customization -->
+            <div id="customization" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">高度可定制的消息格式</h3>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-paint-brush text-3xl text-green-500 mb-4"></i>
+                        <h4 class="font-semibold text-lg mb-2">颜色代码支持</h4>
+                        <p class="text-gray-600 text-sm">支持Minecraft的&和§颜色代码格式<a href="https://www.minebbs.com/tags/spigot/" class="citation-link">[3]</a>
+                        </p>
+                    </div>
+
+                    <div class="feature-card text-center">
+                        <i class="fas fa-tags text-3xl text-blue-500 mb-4"></i>
+                        <h4 class="font-semibold text-lg mb-2">自定义前缀</h4>
+                        <p class="text-gray-600 text-sm">通过prefix字段自定义格言显示前缀<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>
+                        </p>
+                    </div>
+
+                    <div class="feature-card text-center">
+                        <i class="fas fa-magic text-3xl text-purple-500 mb-4"></i>
+                        <h4 class="font-semibold text-lg mb-2">风格定制</h4>
+                        <p class="text-gray-600 text-sm">通过prompt字段深度定制格言内容风格</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <h4 class="font-semibold mb-4">颜色代码应用示例</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                            <tr class="bg-gray-100">
+                                <th class="text-left p-3 font-semibold">风格类型</th>
+                                <th class="text-left p-3 font-semibold">配置示例</th>
+                                <th class="text-left p-3 font-semibold">游戏内效果</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="border-b">
+                                <td class="p-3">简约风格</td>
+                                <td class="p-3 font-mono">§7[§f格言§7] §f</td>
+                                <td class="p-3">
+                                    <span class="text-gray-500">[</span><span class="text-gray-800">格言</span><span class="text-gray-500">]</span>
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-3">品牌风格</td>
+                                <td class="p-3 font-mono">§b[§3MyServer§b] §7> §f</td>
+                                <td class="p-3">
+                                    <span style="color: #00bfff">[</span><span style="color: #00a2ff">MyServer</span><span style="color: #00bfff">]</span> <span class="text-gray-500">&gt;</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-3">彩虹风格</td>
+                                <td class="p-3 font-mono">§cL§6i§et§aM§bo§9t§5t§do</td>
+                                <td class="p-3">
+                                    <span style="color: #ff5555">L</span><span style="color: #ffaa00">i</span><span style="color: #ffff55">t</span><span style="color: #55ff55">e</span><span style="color: #55ffff">M</span><span style="color: #ff55ff">o</span><span style="color: #aa00aa">t</span><span style="color: #ff55ff">t</span><span style="color: #55ffff">o</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance -->
+            <div id="performance" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">异步数据获取与性能优化</h3>
+
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-triangle text-yellow-600 mt-1 mr-3"></i>
+                        <div>
+                            <h4 class="font-semibold text-yellow-800 mb-2">性能考虑</h4>
+                            <p class="text-yellow-700">
+                                LiteMotto在设计之初就充分考虑了对服务器性能的影响，采用了异步数据获取机制来确保服务器的稳定运行<a href="https://www.minebbs.com/tags/spigot/" class="citation-link">[3]</a>。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow Diagram -->
+                <div class="mb-8">
+                    <h4 class="font-semibold text-lg mb-4">异步工作流程</h4>
+                    <div class="mermaid-container">
+                        <div class="mermaid-controls">
+                            <button class="mermaid-control-btn zoom-in" title="放大">
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+                            <button class="mermaid-control-btn zoom-out" title="缩小">
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                            <button class="mermaid-control-btn reset-zoom" title="重置">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                            </button>
+                            <button class="mermaid-control-btn fullscreen" title="全屏查看">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <div class="mermaid" id="workflow-chart">
+                            graph TD
+                            A["玩家加入服务器"] --> B["插件触发事件"]
+                            B --> C["创建异步任务"]
+                            C --> D["主线程继续运行"]
+                            D --> E["服务器保持流畅"]
+                            C --> F["独立线程请求AI"]
+                            F --> G["获取格言内容"]
+                            G --> H["格式化消息"]
+                            H --> I["发送给玩家"]
+
+                            style A fill:#1f2937,stroke:#374151,stroke-width:3px,color:#ffffff
+                            style B fill:#3b82f6,stroke:#2563eb,stroke-width:3px,color:#ffffff
+                            style C fill:#10b981,stroke:#059669,stroke-width:3px,color:#ffffff
+                            style D fill:#f59e0b,stroke:#d97706,stroke-width:3px,color:#ffffff
+                            style E fill:#8b5cf6,stroke:#7c3aed,stroke-width:3px,color:#ffffff
+                            style F fill:#ef4444,stroke:#dc2626,stroke-width:3px,color:#ffffff
+                            style G fill:#06b6d4,stroke:#0891b2,stroke-width:3px,color:#ffffff
+                            style H fill:#84cc16,stroke:#65a30d,stroke-width:3px,color:#ffffff
+                            style I fill:#ec4899,stroke:#db2777,stroke-width:3px,color:#ffffff
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4 class="font-semibold text-lg mb-3">异步机制优势</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>避免主线程阻塞</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>不影响服务器TPS</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>支持高并发场景</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>网络延迟无感知</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Model Adaptation -->
+            <div id="model-adaptation" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">对多种Cloudflare AI模型的自动适配</h3>
+
+                <p class="text-gray-600 mb-6">
+                    Cloudflare AI平台提供了多种不同架构和能力的模型，而LiteMotto插件具备出色的自动适配能力，能够兼容这些模型的不同API返回格式<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800">推荐模型</h4>
+                        <div class="code-block mb-3">
+                            @cf/openai/gpt-oss-120b
+                        </div>
+                        <p class="text-gray-600 text-sm">
+                            大型语言模型，1200亿参数，生成高质量、富有哲理的格言
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800">替代模型</h4>
+                        <div class="code-block mb-3">
+                            @cf/meta/llama-3-8b-instruct
+                        </div>
+                        <p class="text-gray-600 text-sm">
+                            指令微调模型，擅长遵循用户指令生成特定风格文本
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Installation Section -->
+        <section id="installation" class="section-anchor mb-16">
+            <h2 class="serif text-3xl font-bold mb-8 text-gray-800">安装与部署指南</h2>
+
+            <!-- Requirements -->
+            <div id="requirements" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">环境要求</h3>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-server text-3xl text-blue-500 mb-4"></i>
+                        <h4 class="font-semibold text-lg mb-2">服务端类型</h4>
+                        <p class="text-gray-600 text-sm">Minecraft Spigot服务端及其分支（Paper、Purpur等）<a href="https://www.minebbs.com/resources/authors/baicaizhale.46406/" class="citation-link">[1]</a>
+                        </p>
+                    </div>
+
+                    <div class="feature-card text-center">
+                        <i class="fas fa-code text-3xl text-green-500 mb-4"></i>
+                        <h4 class="font-semibold text-lg mb-2">游戏版本</h4>
+                        <p class="text-gray-600 text-sm">理论上支持1.17+版本，已在1.20.4等版本测试<a href="https://www.minebbs.com/tags/spigot/" class="citation-link">[3]</a>
+                        </p>
+                    </div>
+
+                    <div class="feature-card text-center">
+                        <i class="fas fa-wifi text-3xl text-purple-500 mb-4"></i>
+                        <h4 class="font-semibold text-lg mb-2">网络连接</h4>
+                        <p class="text-gray-600 text-sm">稳定的互联网连接，用于调用Cloudflare AI API</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Installation Steps -->
+            <div id="installation-steps" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">安装步骤</h3>
+
+                <div class="space-y-6">
+                    <div class="installation-step">
+                        <h4 class="font-semibold text-lg mb-3">1. 下载插件文件</h4>
+                        <p class="text-gray-600 mb-3">
+                            从GitHub仓库的<strong>Releases</strong>页面下载预编译的.jar文件<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>，或自行编译源代码<a href="https://www.minebbs.com/resources/litemotto.11357/" class="citation-link">[16]</a>。
+                        </p>
+                        <div class="bg-gray-100 p-3 rounded font-mono text-sm">
+                            https://github.com/baicaizhale/LiteMotto/releases
+                        </div>
+                    </div>
+
+                    <div class="installation-step">
+                        <h4 class="font-semibold text-lg mb-3">2. 部署到服务器</h4>
+                        <p class="text-gray-600 mb-3">
+                            将下载好的LiteMotto.jar文件复制到服务器根目录下的<strong>plugins/</strong>文件夹中<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>
+                            <a href="https://www.minebbs.com/resources/litemotto.11357/" class="citation-link">[16]</a>。
+                        </p>
+                        <div class="code-block">
+                            /path/to/your/minecraft_server/
+                            └── plugins/
+                            └── LiteMotto.jar
+                        </div>
+                    </div>
+
+                    <div class="installation-step">
+                        <h4 class="font-semibold text-lg mb-3">3. 启动与配置文件生成</h4>
+                        <p class="text-gray-600 mb-3">
+                            启动Minecraft服务器，插件会自动在plugins文件夹内创建LiteMotto子目录和config.yml配置文件<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                        </p>
+                        <div class="code-block">
+                            /plugins/LiteMotto/
+                            └── config.yml
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotload Support -->
+            <div id="hotload" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">热加载支持 (Plugman-X)</h3>
+
+                <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-fire text-green-600 mt-1 mr-3"></i>
+                        <div>
+                            <h4 class="font-semibold text-green-800 mb-2">热加载功能</h4>
+                            <p class="text-green-700 mb-3">
+                                LiteMotto支持通过<strong>Plugman-X</strong>进行热加载，无需重启服务器即可加载插件<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                            </p>
+                            <div class="code-block bg-green-800">
+                                /plugman load LiteMotto
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Configuration Section -->
+        <section id="configuration" class="section-anchor mb-16">
+            <h2 class="serif text-3xl font-bold mb-8 text-gray-800">配置文件 (config.yml) 深度解析</h2>
+
+            <!-- Config Structure -->
+            <div id="config-structure" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">配置文件位置与结构</h3>
+
+                <div class="config-highlight">
+                    <h4 class="font-semibold text-amber-800 mb-2">
+                        <i class="fas fa-file-code mr-2"></i>配置文件路径
+                    </h4>
+                    <p class="text-amber-700 mb-2">
+                        <code>plugins/LiteMotto/config.yml</code>
+                        <a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>
+                    </p>
+                    <p class="text-amber-600 text-sm">
+                        使用YAML格式，结构清晰，主要由键值对组成，通过缩进表示层级关系
+                    </p>
+                </div>
+            </div>
+
+            <!-- API Configuration -->
+            <div id="api-config" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">Cloudflare API认证信息</h3>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800">
+                            <i class="fas fa-id-card text-blue-500 mr-2"></i>账户ID (account-id)
+                        </h4>
+                        <p class="text-gray-600 mb-3">
+                            您的Cloudflare账户ID，用于识别账户<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>
+                        </p>
+                        <div class="code-block">
+                            account-id: "your_account_id_here"
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800">
+                            <i class="fas fa-key text-red-500 mr-2"></i>API密钥 (api-key)
+                        </h4>
+                        <p class="text-gray-600 mb-3">
+                            Cloudflare API密钥或令牌，用于验证请求<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>
+                        </p>
+                        <div class="code-block">
+                            api-key: "your_api_key_here"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                    <h4 class="font-semibold text-red-800 mb-2">安全提示</h4>
+                    <p class="text-red-700">
+                        请妥善保管您的API密钥，不要将其泄露给他人，也不要将其提交到任何公共代码仓库中。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Model Selection -->
+            <div id="model-selection" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">AI模型选择 (model)</h3>
+
+                <div class="space-y-6">
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800">
+                            <i class="fas fa-star text-yellow-500 mr-2"></i>推荐模型
+                        </h4>
+                        <div class="code-block mb-3">
+                            model: "@cf/openai/gpt-oss-120b"
+                        </div>
+                        <p class="text-gray-600">
+                            根据插件作者推荐，这是一个性能优异的选择<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。1200亿参数的大型语言模型，能够生成高质量、富有逻辑和哲理的格言。
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800">
+                            <i class="fas fa-cog text-purple-500 mr-2"></i>其他支持模型
+                        </h4>
+                        <div class="code-block mb-3">
+                            model: "@cf/meta/llama-3-8b-instruct"
+                        </div>
+                        <p class="text-gray-600">
+                            Meta开发的Llama 3系列模型，经过指令微调，特别擅长遵循用户指令生成文本<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prompt Customization -->
+            <div id="prompt-customization" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">提示词定制 (prompt)</h3>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                    <h4 class="font-semibold text-blue-800 mb-3">默认提示词解析</h4>
+                    <div class="code-block bg-blue-800 mb-3">
+                        prompt: "请直接返回一句有哲理的格言，不要思考，也不要包含任何前后缀、标点、额外的文字或解释。"
+                    </div>
+                    <ul class="text-blue-700 space-y-1 text-sm">
+                        <li><strong>任务：</strong>返回一句格言</li>
+                        <li><strong>内容要求：</strong>有哲理</li>
+                        <li><strong>格式要求：</strong>直接返回，不要有任何多余的思考过程、前后缀、标点符号或解释性文字</li>
+                    </ul>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3">
+                            <i class="fas fa-laugh text-yellow-500 mr-2"></i>幽默风格
+                        </h4>
+                        <div class="code-block mb-3 text-sm">
+                            prompt: "请生成一句幽默风趣、能让人会心一笑的格言。"
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3">
+                            <i class="fas fa-rocket text-purple-500 mr-2"></i>科幻主题
+                        </h4>
+                        <div class="code-block mb-3 text-sm">
+                            prompt: "请以未来科幻世界的视角，创作一句关于宇宙或科技的格言。"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prefix Styling -->
+            <div id="prefix-styling" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">消息前缀与颜色代码 (prefix)</h3>
+
+                <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                    <h4 class="font-semibold text-green-800 mb-3">支持的格式</h4>
+                    <div class="grid grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <code class="bg-green-200 px-2 py-1 rounded">&</code> (Ampersand)
+                        </div>
+                        <div>
+                            <code class="bg-green-200 px-2 py-1 rounded">§</code> (Section Sign)
+                        </div>
+                    </div>
+                    <p class="text-green-700 text-sm">
+                        插件会自动识别并转换这两种格式的颜色代码<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <h4 class="font-semibold text-lg mb-3">配置示例</h4>
+                    <div class="code-block mb-3">
+                        prefix: "§b[§fLiteMotto§b] §7> §f"
+                    </div>
+                    <p class="text-gray-600">
+                        这将显示为：<span style="color: #00bfff">[</span><span style="color: #ffffff">LiteMotto</span><span style="color: #00bfff">]</span> <span class="text-gray-500">&gt;</span> 格言内容
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="section-anchor mb-16">
+            <h2 class="serif text-3xl font-bold mb-8 text-gray-800">常见问题 (FAQ) 与故障排除</h2>
+
+            <!-- Duplicate Content -->
+            <div id="duplicate-content" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">格言内容重复问题</h3>
+
+                <div class="space-y-6">
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3 text-gray-800">
+                            <i class="fas fa-shield-alt text-blue-500 mr-2"></i>去重机制
+                        </h4>
+                        <p class="text-gray-600 mb-3">
+                            LiteMotto插件在v3.0.0版本之后引入了去重机制<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。该机制会记录最近生成的10条格言，并将其作为上下文信息提供给AI，避免生成重复内容。
+                        </p>
+                    </div>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-yellow-800 mb-2">风格模仿问题</h4>
+                        <p class="text-yellow-700">
+                            由于去重机制，AI可能会参考之前的格言风格，导致风格趋于固定。可以通过修改提示词或重启服务器来打破这种模式。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Issues -->
+            <div id="api-issues" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">API与模型相关问题</h3>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3">
+                            <i class="fas fa-plug text-green-500 mr-2"></i>模型兼容性
+                        </h4>
+                        <p class="text-gray-600">
+                            LiteMotto具备自动适配多种模型返回格式的能力<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>，切换模型时无需担心格式不匹配问题。
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3">
+                            <i class="fas fa-wrench text-blue-500 mr-2"></i>格式适配
+                        </h4>
+                        <p class="text-gray-600">
+                            插件已更新支持Cloudflare的run/input新格式，无需手动切换API格式。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Style Customization -->
+            <div id="style-customization" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">如何自定义格言风格</h3>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                    <h4 class="font-semibold text-blue-800 mb-3">最直接有效的方法</h4>
+                    <p class="text-blue-700 mb-3">
+                        通过修改config.yml文件中的<strong>prompt</strong>字段来自定义格言风格<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                    </p>
+                    <div class="code-block bg-blue-800">
+                        prompt: "请生成一句能够激励人心、充满正能量的格言。"
+                    </div>
+                </div>
+            </div>
+
+            <!-- Color Codes -->
+            <div id="color-codes" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">颜色代码不生效问题</h3>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-red-800 mb-2">常见原因</h4>
+                        <ul class="text-red-700 space-y-1">
+                            <li>1. 格式错误：确保颜色代码格式正确，后面紧跟文本</li>
+                            <li>2. 插件冲突：其他聊天管理插件可能干扰颜色代码解析</li>
+                            <li>3. 文件编码：确保config.yml以UTF-8无BOM格式保存</li>
+                            <li>4. 插件版本：确保使用最新版本的LiteMotto</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Development Section -->
+        <section id="development" class="section-anchor mb-16">
+            <h2 class="serif text-3xl font-bold mb-8 text-gray-800">开发与贡献</h2>
+
+            <!-- Source Code -->
+            <div id="source-code" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">源码仓库地址</h3>
+
+                <div class="bg-gray-800 text-white p-6 rounded-lg mb-6">
+                    <h4 class="font-semibold text-lg mb-3">
+                        <i class="fab fa-github mr-2"></i>GitHub仓库
+                    </h4>
+                    <div class="code-block mb-3">
+                        https://github.com/baicaizhale/LiteMotto
+                    </div>
+                    <p class="text-gray-300">
+                        LiteMotto是一个开源项目，完整的源代码托管在GitHub上<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Contributing -->
+            <div id="contributing" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">如何提交Issue与Pull Request</h3>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3">
+                            <i class="fas fa-bug text-red-500 mr-2"></i>提交Issue
+                        </h4>
+                        <p class="text-gray-600 mb-3">
+                            发现问题或有功能建议，可通过GitHub的Issues功能提交<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                        </p>
+                        <ul class="text-gray-600 text-sm space-y-1">
+                            <li>• 提供插件版本和服务端版本</li>
+                            <li>• 详细描述问题和复现步骤</li>
+                            <li>• 提供错误日志或截图</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4 class="font-semibold text-lg mb-3">
+                            <i class="fas fa-code-branch text-blue-500 mr-2"></i>提交PR
+                        </h4>
+                        <p class="text-gray-600 mb-3">
+                            修复bug或实现新功能，可通过Pull Request提交贡献<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                        </p>
+                        <ul class="text-gray-600 text-sm space-y-1">
+                            <li>• Fork官方仓库并创建新分支</li>
+                            <li>• 遵循项目编码规范</li>
+                            <li>• 测试修改确保正常工作</li>
+                            <li>• 清晰说明修改内容</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div id="disclaimer" class="section-anchor mb-12">
+                <h3 class="serif text-2xl font-semibold mb-6 text-gray-800">项目声明与免责声明</h3>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-6">
+                    <h4 class="font-semibold text-amber-800 mb-3">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>重要声明
+                    </h4>
+                    <div class="space-y-3 text-amber-700">
+                        <p>
+                            <strong>个人项目：</strong>LiteMotto是个人项目，与Cloudflare AI官方没有直接关联<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                        </p>
+                        <p>
+                            <strong>MIT许可证：</strong>项目采用MIT开源许可证，允许自由使用、修改和分发，但需包含原始版权声明<a href="https://github.com/baicaizhale/LiteMotto" class="citation-link">[11]</a>。
+                        </p>
+                        <p>
+                            <strong>免责条款：</strong>作者不对因使用该插件而可能产生的任何问题承担责任。使用前建议仔细阅读完整的MIT许可证文本。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<script>
+    // Initialize Mermaid with enhanced theme
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#1f2937',
+            primaryTextColor: '#ffffff',
+            primaryBorderColor: '#374151',
+            lineColor: '#6b7280',
+            secondaryColor: '#f9fafb',
+            tertiaryColor: '#ffffff',
+            background: '#ffffff',
+            mainBkg: '#1f2937',
+            secondBkg: '#3b82f6',
+            tertiaryBkg: '#10b981',
+            nodeBorder: '#374151',
+            clusterBkg: '#f9fafb',
+            edgeLabelBackground: 'rgba(255, 255, 255, 0.9)',
+            nodeTextColor: '#ffffff',
+            textColor: '#1f2937',
+            fontSize: '14px',
+            fontFamily: 'Inter, sans-serif'
+        },
+        flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis',
+            padding: 20,
+            nodeSpacing: 50,
+            rankSpacing: 80
+        },
+        fontFamily: 'Inter, sans-serif'
+    });
+
+    // Initialize Mermaid Controls for zoom and pan
+    function initializeMermaidControls() {
+        const containers = document.querySelectorAll('.mermaid-container');
+
+        containers.forEach(container => {
+            const mermaidElement = container.querySelector('.mermaid');
+            let scale = 1;
+            let isDragging = false;
+            let startX, startY, translateX = 0, translateY = 0;
+
+            // 触摸相关状态
+            let isTouch = false;
+            let touchStartTime = 0;
+            let initialDistance = 0;
+            let initialScale = 1;
+            let isPinching = false;
+
+            // Zoom controls
+            const zoomInBtn = container.querySelector('.zoom-in');
+            const zoomOutBtn = container.querySelector('.zoom-out');
+            const resetBtn = container.querySelector('.reset-zoom');
+            const fullscreenBtn = container.querySelector('.fullscreen');
+
+            function updateTransform() {
+                mermaidElement.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+
+                if (scale > 1) {
+                    container.classList.add('zoomed');
+                } else {
+                    container.classList.remove('zoomed');
+                }
+
+                mermaidElement.style.cursor = isDragging ? 'grabbing' : 'grab';
+            }
+
+            if (zoomInBtn) {
+                zoomInBtn.addEventListener('click', () => {
+                    scale = Math.min(scale * 1.25, 4);
+                    updateTransform();
+                });
+            }
+
+            if (zoomOutBtn) {
+                zoomOutBtn.addEventListener('click', () => {
+                    scale = Math.max(scale / 1.25, 0.3);
+                    if (scale <= 1) {
+                        translateX = 0;
+                        translateY = 0;
+                    }
+                    updateTransform();
+                });
+            }
+
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    scale = 1;
+                    translateX = 0;
+                    translateY = 0;
+                    updateTransform();
+                });
+            }
+
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', () => {
+                    if (container.requestFullscreen) {
+                        container.requestFullscreen();
+                    } else if (container.webkitRequestFullscreen) {
+                        container.webkitRequestFullscreen();
+                    } else if (container.msRequestFullscreen) {
+                        container.msRequestFullscreen();
+                    }
+                });
+            }
+
+            // Mouse Events
+            mermaidElement.addEventListener('mousedown', (e) => {
+                if (isTouch) return; // 如果是触摸设备，忽略鼠标事件
+
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                mermaidElement.style.cursor = 'grabbing';
+                updateTransform();
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging && !isTouch) {
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                    updateTransform();
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging && !isTouch) {
+                    isDragging = false;
+                    mermaidElement.style.cursor = 'grab';
+                    updateTransform();
+                }
+            });
+
+            document.addEventListener('mouseleave', () => {
+                if (isDragging && !isTouch) {
+                    isDragging = false;
+                    mermaidElement.style.cursor = 'grab';
+                    updateTransform();
+                }
+            });
+
+            // 获取两点之间的距离
+            function getTouchDistance(touch1, touch2) {
+                return Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+            }
+
+            // Touch Events - 触摸事件处理
+            mermaidElement.addEventListener('touchstart', (e) => {
+                isTouch = true;
+                touchStartTime = Date.now();
+
+                if (e.touches.length === 1) {
+                    // 单指拖动
+                    isPinching = false;
+                    isDragging = true;
+
+                    const touch = e.touches[0];
+                    startX = touch.clientX - translateX;
+                    startY = touch.clientY - translateY;
+
+                } else if (e.touches.length === 2) {
+                    // 双指缩放
+                    isPinching = true;
+                    isDragging = false;
+
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    initialDistance = getTouchDistance(touch1, touch2);
+                    initialScale = scale;
+                }
+
+                e.preventDefault();
+            }, { passive: false });
+
+            mermaidElement.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1 && isDragging && !isPinching) {
+                    // 单指拖动
+                    const touch = e.touches[0];
+                    translateX = touch.clientX - startX;
+                    translateY = touch.clientY - startY;
+                    updateTransform();
+
+                } else if (e.touches.length === 2 && isPinching) {
+                    // 双指缩放
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    const currentDistance = getTouchDistance(touch1, touch2);
+
+                    if (initialDistance > 0) {
+                        const newScale = Math.min(Math.max(
+                            initialScale * (currentDistance / initialDistance),
+                            0.3
+                        ), 4);
+                        scale = newScale;
+                        updateTransform();
+                    }
+                }
+
+                e.preventDefault();
+            }, { passive: false });
+
+            mermaidElement.addEventListener('touchend', (e) => {
+                // 重置状态
+                if (e.touches.length === 0) {
+                    isDragging = false;
+                    isPinching = false;
+                    initialDistance = 0;
+
+                    // 延迟重置isTouch，避免鼠标事件立即触发
+                    setTimeout(() => {
+                        isTouch = false;
+                    }, 100);
+                } else if (e.touches.length === 1 && isPinching) {
+                    // 从双指变为单指，切换为拖动模式
+                    isPinching = false;
+                    isDragging = true;
+
+                    const touch = e.touches[0];
+                    startX = touch.clientX - translateX;
+                    startY = touch.clientY - translateY;
+                }
+
+                updateTransform();
+            });
+
+            mermaidElement.addEventListener('touchcancel', (e) => {
+                isDragging = false;
+                isPinching = false;
+                initialDistance = 0;
+
+                setTimeout(() => {
+                    isTouch = false;
+                }, 100);
+
+                updateTransform();
+            });
+
+            // Enhanced wheel zoom with better center point handling
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const rect = container.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                const newScale = Math.min(Math.max(scale * delta, 0.3), 4);
+
+                // Adjust translation to zoom towards center
+                if (newScale !== scale) {
+                    const scaleDiff = newScale / scale;
+                    translateX = translateX * scaleDiff;
+                    translateY = translateY * scaleDiff;
+                    scale = newScale;
+
+                    if (scale <= 1) {
+                        translateX = 0;
+                        translateY = 0;
+                    }
+
+                    updateTransform();
+                }
+            });
+
+            // Initialize display
+            updateTransform();
+        });
+    }
+
+    // Mobile TOC Toggle
+    const mobileToggle = document.getElementById('mobile-toc-toggle');
+    const sidebar = document.getElementById('toc-sidebar');
+
+    mobileToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('mobile-open');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 1024 &&
+            !sidebar.contains(e.target) &&
+            !mobileToggle.contains(e.target)) {
+            sidebar.classList.remove('mobile-open');
+        }
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Active section highlighting
+    const observerOptions = {
+        root: null,
+        rootMargin: '-20% 0px -70% 0px',
+        threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Remove active class from all links
+                document.querySelectorAll('.toc-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                // Add active class to current section link
+                const activeLink = document.querySelector(`a[href="#${entry.target.id}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+        });
+    }, observerOptions);
+
+    // Observe all sections
+    document.querySelectorAll('.section-anchor').forEach(section => {
+        observer.observe(section);
+    });
+
+    // Initialize Mermaid Controls
+    initializeMermaidControls();
+</script>
+</body>
+
+</html>
