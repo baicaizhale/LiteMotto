@@ -1,4 +1,5 @@
-name: publish-package.yml
+name: Publish Package
+
 on:
   push:
     branches:
