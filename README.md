@@ -2,6 +2,15 @@
 
 LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器时发送一句每日格言。格言由 **Cloudflare AI** 生成，支持自定义前缀、颜色代码以及提示词。
 
+---
+
+**您大可在以下位置更细致的了解本插件：**
+- [LiteMotto文档库](https://baicaizhale.icu/notes/LiteMotto/) 
+- [由AI生成的LiteMotto简介](https://litemotto.baicaizhale.icu/)
+
+**以及对应的仓库：**
+- https://github.com/baicaizhale/doc/tree/main/docs/notes/LiteMotto
+- https://github.com/baicaizhale/LiteMotto/tree/web
 ## 📢 目前不知道怎么解决的问题，路过的大佬可以尝试帮忙解决
 v3.0.0以后的版本为了防止ai生成重复内容会把最近已经生成过的内容提供给ai来让ai不再生成相同内容，但这也导致了ai会模仿前几次格言的语气，比如重启服务器后第一句如果是文言文那么后面生成的都会和前面一样是文言文
 
