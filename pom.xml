@@ -6,7 +6,7 @@
 
     <groupId>org.baicaizhale</groupId>
     <artifactId>litemotto</artifactId>
-    <version>3.2.0</version>
+    <version>${env.VERSION}</version>
     <packaging>jar</packaging>
 
     <name>litemotto</name>
