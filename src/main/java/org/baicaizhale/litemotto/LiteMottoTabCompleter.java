@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class LiteMottoTabCompleter implements TabCompleter {
 
-    private static final List<String> COMMANDS = Arrays.asList("gen", "debug");
+    private static final List<String> COMMANDS = Arrays.asList("gen", "debug", "reload");
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

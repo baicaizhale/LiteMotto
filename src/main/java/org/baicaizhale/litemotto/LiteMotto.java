@@ -99,6 +99,16 @@ public class LiteMotto extends JavaPlugin {
                         getLogger().info("[LiteMotto Debug] 玩家 " + player.getName() + " 关闭了调试模式");
                     }
                     return true;
+                } else if (args[0].equalsIgnoreCase("reload")) {
+                    // 重载插件配置
+                    if (!sender.hasPermission("litemotto.reload")) {
+                        sender.sendMessage(PlayerJoinListener.colorize("&c你没有权限执行此命令。"));
+                        return true;
+                    }
+                    reloadConfig();
+                    sender.sendMessage(PlayerJoinListener.colorize("&aLiteMotto 配置已重载。"));
+                    getLogger().info("[LiteMotto Debug] 插件配置已由 " + sender.getName() + " 重载。");
+                    return true;
                 }
             }
             return false;
