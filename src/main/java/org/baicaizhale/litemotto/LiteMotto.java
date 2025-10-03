@@ -39,16 +39,45 @@ public class LiteMotto extends JavaPlugin {
                             sender.sendMessage(PlayerJoinListener.colorize(prefix + motto));
                             recentMottoManager.addMotto(motto); // 保存格言
                             
-                            // 如果有调试模式玩家，输出调试信息
-                            if (DebugManager.hasDebugPlayers()) {
-                                getLogger().info("[Debug] 生成格言: " + motto);
+                            // 输出详细调试信息到控制台
+                            getLogger().info("========== LiteMotto Debug ==========");
+                            getLogger().info("[Debug] 命令执行者: " + sender.getName());
+                            getLogger().info("[Debug] 格言生成成功: " + motto);
+                            getLogger().info("[Debug] 格言长度: " + motto.length() + " 字符");
+                            getLogger().info("[Debug] 最近格言列表大小: " + recentMottoManager.getRecentMottos().size());
+                            getLogger().info("[Debug] 格言生成时间: " + new java.util.Date());
+                            getLogger().info("======================================");
+
+                            // 如果命令执行者是玩家且处于调试模式，发送详细调试信息
+                            if (sender instanceof Player) {
+                                Player player = (Player) sender;
+                                if (DebugManager.isInDebugMode(player)) {
+                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &a格言生成成功"));
+                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f内容: &e" + motto));
+                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f长度: &e" + motto.length() + " &f字符"));
+                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f已添加到最近格言列表，当前列表大小: &e" + 
+                                        recentMottoManager.getRecentMottos().size()));
+                                }
                             }
                         } else {
                             sender.sendMessage(PlayerJoinListener.colorize("&c获取格言失败，请稍后再试。"));
                             
-                            // 如果有调试模式玩家，输出调试信息
-                            if (DebugManager.hasDebugPlayers()) {
-                                getLogger().info("[Debug] 格言生成失败");
+                            // 输出详细调试信息到控制台
+                            getLogger().info("========== LiteMotto Debug ==========");
+                            getLogger().info("[Debug] 命令执行者: " + sender.getName());
+                            getLogger().info("[Debug] 格言生成状态: 失败");
+                            getLogger().info("[Debug] 可能原因: 网络问题或API响应错误");
+                            getLogger().info("[Debug] 尝试时间: " + new java.util.Date());
+                            getLogger().info("======================================");
+
+                            // 如果命令执行者是玩家且处于调试模式，发送详细调试信息
+                            if (sender instanceof Player) {
+                                Player player = (Player) sender;
+                                if (DebugManager.isInDebugMode(player)) {
+                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &c格言生成失败"));
+                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f可能原因: &e网络问题或API响应错误"));
+                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f请检查控制台获取更多错误信息"));
+                                }
                             }
                         }
                     });

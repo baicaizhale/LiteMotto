@@ -36,17 +36,15 @@ public class PlayerJoinListener implements Listener {
                         LiteMotto.getRecentMottoManager().getRecentMottos().size()));
                 }
                 
-                // 如果有调试模式玩家，输出详细调试信息到控制台
-                if (DebugManager.hasDebugPlayers()) {
-                    Bukkit.getLogger().info("========== LiteMotto 调试信息 ==========");
-                    Bukkit.getLogger().info("[Debug] 玩家 " + player.getName() + " 加入服务器");
-                    Bukkit.getLogger().info("[Debug] UUID: " + player.getUniqueId());
-                    Bukkit.getLogger().info("[Debug] 格言生成成功: " + motto);
-                    Bukkit.getLogger().info("[Debug] 格言长度: " + motto.length() + " 字符");
-                    Bukkit.getLogger().info("[Debug] 最近格言列表大小: " + LiteMotto.getRecentMottoManager().getRecentMottos().size());
-                    Bukkit.getLogger().info("[Debug] 格言生成时间: " + new java.util.Date());
-                    Bukkit.getLogger().info("======================================");
-                }
+                // 输出详细调试信息到控制台
+                Bukkit.getLogger().info("========== LiteMotto 调试信息 ==========");
+                Bukkit.getLogger().info("[Debug] 玩家 " + player.getName() + " 加入服务器");
+                Bukkit.getLogger().info("[Debug] UUID: " + player.getUniqueId());
+                Bukkit.getLogger().info("[Debug] 格言生成成功: " + motto);
+                Bukkit.getLogger().info("[Debug] 格言长度: " + motto.length() + " 字符");
+                Bukkit.getLogger().info("[Debug] 最近格言列表大小: " + LiteMotto.getRecentMottoManager().getRecentMottos().size());
+                Bukkit.getLogger().info("[Debug] 格言生成时间: " + new java.util.Date());
+                Bukkit.getLogger().info("======================================");
             } else {
                 player.sendMessage(colorize("&c获取格言失败，请稍后再试。"));
                 
@@ -57,16 +55,14 @@ public class PlayerJoinListener implements Listener {
                     player.sendMessage(colorize("&7[Debug] &f请检查控制台获取更多错误信息"));
                 }
                 
-                // 如果有调试模式玩家，输出详细调试信息到控制台
-                if (DebugManager.hasDebugPlayers()) {
-                    Bukkit.getLogger().info("=========== LiteMotto Debug ===========");
-                    Bukkit.getLogger().info("[Debug] 玩家 " + player.getName() + " 加入服务器");
-                    Bukkit.getLogger().info("[Debug] UUID: " + player.getUniqueId());
-                    Bukkit.getLogger().info("[Debug] 格言生成状态: 失败");
-                    Bukkit.getLogger().info("[Debug] 可能原因: 网络问题或API响应错误");
-                    Bukkit.getLogger().info("[Debug] 尝试时间: " + new java.util.Date());
-                    Bukkit.getLogger().info("======================================");
-                }
+                // 输出详细调试信息到控制台
+                Bukkit.getLogger().info("=========== LiteMotto Debug ===========");
+                Bukkit.getLogger().info("[Debug] 玩家 " + player.getName() + " 加入服务器");
+                Bukkit.getLogger().info("[Debug] UUID: " + player.getUniqueId());
+                Bukkit.getLogger().info("[Debug] 格言生成状态: 失败");
+                Bukkit.getLogger().info("[Debug] 可能原因: 网络问题或API响应错误");
+                Bukkit.getLogger().info("[Debug] 尝试时间: " + new java.util.Date());
+                Bukkit.getLogger().info("======================================");
             }
         });
     }
