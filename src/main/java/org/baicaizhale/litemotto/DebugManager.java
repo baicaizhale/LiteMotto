@@ -58,7 +58,7 @@ public class DebugManager {
         for (UUID playerId : debugPlayers) {
             Player player = LiteMotto.getInstance().getServer().getPlayer(playerId);
             if (player != null && player.isOnline()) {
-                player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f" + message));
+                player.sendMessage(PlayerJoinListener.colorize("&7[LiteMotto Debug] &f" + message));
             }
         }
     }

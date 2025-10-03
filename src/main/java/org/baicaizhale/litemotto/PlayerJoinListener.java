@@ -27,14 +27,11 @@ public class PlayerJoinListener implements Listener {
                 player.sendMessage(colorize(prefix + motto));
                 LiteMotto.getRecentMottoManager().addMotto(motto); // 保存格言
                 
-                // 如果玩家处于调试模式，发送详细调试信息
-                if (DebugManager.isInDebugMode(player)) {
-                    player.sendMessage(colorize("&7[LiteMotto Debug] &a格言生成成功"));
-                    player.sendMessage(colorize("&7[LiteMotto Debug] &f内容: &e" + motto));
-                    player.sendMessage(colorize("&7[LiteMotto Debug] &f长度: &e" + motto.length() + " &f字符"));
-                    player.sendMessage(colorize("&7[LiteMotto Debug] &f已添加到最近格言列表，当前列表大小: &e" + 
-                        LiteMotto.getRecentMottoManager().getRecentMottos().size()));
-                }
+                // 向所有处于调试模式的玩家发送详细调试信息
+                DebugManager.sendDebugMessage("&a格言生成成功");
+                DebugManager.sendDebugMessage("&f内容: &e" + motto);
+                DebugManager.sendDebugMessage("&f长度: &e" + motto.length() + " &f字符");
+                DebugManager.sendDebugMessage("&f已添加到最近格言列表，当前列表大小: &e" + LiteMotto.getRecentMottoManager().getRecentMottos().size());
                 
                 // 输出详细调试信息到控制台
                 Bukkit.getLogger().info("========== LiteMotto 调试信息 ==========");
@@ -48,12 +45,10 @@ public class PlayerJoinListener implements Listener {
             } else {
                 player.sendMessage(colorize("&c获取格言失败，请稍后再试。"));
                 
-                // 如果玩家处于调试模式，发送详细调试信息
-                if (DebugManager.isInDebugMode(player)) {
-                    player.sendMessage(colorize("&7[LiteMotto Debug] &c格言生成失败"));
-                    player.sendMessage(colorize("&7[LiteMotto Debug] &f可能原因: &e网络问题或API响应错误"));
-                    player.sendMessage(colorize("&7[LiteMotto Debug] &f请检查控制台获取更多错误信息"));
-                }
+                // 向所有处于调试模式的玩家发送详细调试信息
+                DebugManager.sendDebugMessage("&c格言生成失败");
+                DebugManager.sendDebugMessage("&f可能原因: &e网络问题或API响应错误");
+                DebugManager.sendDebugMessage("&f请检查控制台获取更多错误信息");
                 
                 // 输出详细调试信息到控制台
                 Bukkit.getLogger().info("=========== LiteMotto Debug ==========");

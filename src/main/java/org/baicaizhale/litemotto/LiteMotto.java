@@ -53,17 +53,12 @@ public class LiteMotto extends JavaPlugin {
                             getLogger().info("[LiteMotto Debug] 格言生成时间: " + new java.util.Date());
                             getLogger().info("======================================");
 
-                            // 如果命令执行者是玩家且处于调试模式，发送详细调试信息
-                            if (sender instanceof Player) {
-                                Player player = (Player) sender;
-                                if (DebugManager.isInDebugMode(player)) {
-                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &a格言生成成功"));
-                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f内容: &e" + motto));
-                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f长度: &e" + motto.length() + " &f字符"));
-                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f已添加到最近格言列表，当前列表大小: &e" + 
-                                        recentMottoManager.getRecentMottos().size()));
-                                }
-                            }
+                            // 向所有处于调试模式的玩家发送详细调试信息
+                            DebugManager.sendDebugMessage("&a格言生成成功");
+                            DebugManager.sendDebugMessage("&f内容: &e" + motto);
+                            DebugManager.sendDebugMessage("&f长度: &e" + motto.length() + " &f字符");
+                            DebugManager.sendDebugMessage("&f已添加到最近格言列表，当前列表大小: &e" + 
+                                recentMottoManager.getRecentMottos().size());
                         } else {
                             sender.sendMessage(PlayerJoinListener.colorize("&c获取格言失败，请稍后再试。"));
                             
@@ -75,15 +70,10 @@ public class LiteMotto extends JavaPlugin {
                             getLogger().info("[LiteMotto Debug] 尝试时间: " + new java.util.Date());
                             getLogger().info("======================================");
 
-                            // 如果命令执行者是玩家且处于调试模式，发送详细调试信息
-                            if (sender instanceof Player) {
-                                Player player = (Player) sender;
-                                if (DebugManager.isInDebugMode(player)) {
-                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &c格言生成失败"));
-                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f可能原因: &e网络问题或API响应错误"));
-                                    player.sendMessage(PlayerJoinListener.colorize("&7[Debug] &f请检查控制台获取更多错误信息"));
-                                }
-                            }
+                            // 向所有处于调试模式的玩家发送详细调试信息
+                            DebugManager.sendDebugMessage("&c格言生成失败");
+                            DebugManager.sendDebugMessage("&f可能原因: &e网络问题或API响应错误");
+                            DebugManager.sendDebugMessage("&f请检查控制台获取更多错误信息");
                         }
                     });
                     return true;
@@ -98,10 +88,10 @@ public class LiteMotto extends JavaPlugin {
                     boolean isDebugMode = DebugManager.toggleDebugMode(player);
                     if (isDebugMode) {
                         player.sendMessage(PlayerJoinListener.colorize("&a已开启调试模式，你将收到简短的调试信息。"));
-                        getLogger().info("[LiteMotto Debug] 玩家 " + player.getName() + " 开启了调试模式");
+                        DebugManager.sendDebugMessage("玩家 " + player.getName() + " 开启了调试模式");
                     } else {
                         player.sendMessage(PlayerJoinListener.colorize("&c已关闭调试模式。"));
-                        getLogger().info("[LiteMotto Debug] 玩家 " + player.getName() + " 关闭了调试模式");
+                        DebugManager.sendDebugMessage("玩家 " + player.getName() + " 关闭了调试模式");
                     }
                     return true;
                 } else if (args[0].equalsIgnoreCase("reload")) {
