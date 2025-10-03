@@ -40,7 +40,7 @@ jobs:
         if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-artifact@v4
         with:
-          name: litemotto-#${{ steps.sha.outputs.SHORT_SHA }}
+          name: litemotto#${{ steps.sha.outputs.SHORT_SHA }}
           path: target/*.jar
 
       - name: 设置发布版本
