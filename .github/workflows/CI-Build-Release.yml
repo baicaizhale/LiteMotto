@@ -57,7 +57,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: target/*.jar
+          files: target/litemotto-*.jar
           tag_name: ${{ github.ref_name }}
           name:  Release ${{ github.ref_name }}
           generate_release_notes: true
