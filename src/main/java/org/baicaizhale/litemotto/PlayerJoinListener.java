@@ -29,39 +29,39 @@ public class PlayerJoinListener implements Listener {
                 
                 // 如果玩家处于调试模式，发送详细调试信息
                 if (DebugManager.isInDebugMode(player)) {
-                    player.sendMessage(colorize("&7[Debug] &a格言生成成功"));
-                    player.sendMessage(colorize("&7[Debug] &f内容: &e" + motto));
-                    player.sendMessage(colorize("&7[Debug] &f长度: &e" + motto.length() + " &f字符"));
-                    player.sendMessage(colorize("&7[Debug] &f已添加到最近格言列表，当前列表大小: &e" + 
+                    player.sendMessage(colorize("&7[LiteMotto Debug] &a格言生成成功"));
+                    player.sendMessage(colorize("&7[LiteMotto Debug] &f内容: &e" + motto));
+                    player.sendMessage(colorize("&7[LiteMotto Debug] &f长度: &e" + motto.length() + " &f字符"));
+                    player.sendMessage(colorize("&7[LiteMotto Debug] &f已添加到最近格言列表，当前列表大小: &e" + 
                         LiteMotto.getRecentMottoManager().getRecentMottos().size()));
                 }
                 
                 // 输出详细调试信息到控制台
                 Bukkit.getLogger().info("========== LiteMotto 调试信息 ==========");
-                Bukkit.getLogger().info("[Debug] 玩家 " + player.getName() + " 加入服务器");
-                Bukkit.getLogger().info("[Debug] UUID: " + player.getUniqueId());
-                Bukkit.getLogger().info("[Debug] 格言生成成功: " + motto);
-                Bukkit.getLogger().info("[Debug] 格言长度: " + motto.length() + " 字符");
-                Bukkit.getLogger().info("[Debug] 最近格言列表大小: " + LiteMotto.getRecentMottoManager().getRecentMottos().size());
-                Bukkit.getLogger().info("[Debug] 格言生成时间: " + new java.util.Date());
+                Bukkit.getLogger().info("[LiteMotto Debug] 玩家 " + player.getName() + " 加入服务器");
+                Bukkit.getLogger().info("[LiteMotto Debug] UUID: " + player.getUniqueId());
+                Bukkit.getLogger().info("[LiteMotto Debug] 格言生成成功: " + motto);
+                Bukkit.getLogger().info("[LiteMotto Debug] 格言长度: " + motto.length() + " 字符");
+                Bukkit.getLogger().info("[LiteMotto Debug] 最近格言列表大小: " + LiteMotto.getRecentMottoManager().getRecentMottos().size());
+                Bukkit.getLogger().info("[LiteMotto Debug] 格言生成时间: " + new java.util.Date());
                 Bukkit.getLogger().info("======================================");
             } else {
                 player.sendMessage(colorize("&c获取格言失败，请稍后再试。"));
                 
                 // 如果玩家处于调试模式，发送详细调试信息
                 if (DebugManager.isInDebugMode(player)) {
-                    player.sendMessage(colorize("&7[Debug] &c格言生成失败"));
-                    player.sendMessage(colorize("&7[Debug] &f可能原因: &e网络问题或API响应错误"));
-                    player.sendMessage(colorize("&7[Debug] &f请检查控制台获取更多错误信息"));
+                    player.sendMessage(colorize("&7[LiteMotto Debug] &c格言生成失败"));
+                    player.sendMessage(colorize("&7[LiteMotto Debug] &f可能原因: &e网络问题或API响应错误"));
+                    player.sendMessage(colorize("&7[LiteMotto Debug] &f请检查控制台获取更多错误信息"));
                 }
                 
                 // 输出详细调试信息到控制台
-                Bukkit.getLogger().info("=========== LiteMotto Debug ===========");
-                Bukkit.getLogger().info("[Debug] 玩家 " + player.getName() + " 加入服务器");
-                Bukkit.getLogger().info("[Debug] UUID: " + player.getUniqueId());
-                Bukkit.getLogger().info("[Debug] 格言生成状态: 失败");
-                Bukkit.getLogger().info("[Debug] 可能原因: 网络问题或API响应错误");
-                Bukkit.getLogger().info("[Debug] 尝试时间: " + new java.util.Date());
+                Bukkit.getLogger().info("=========== LiteMotto Debug ==========");
+                Bukkit.getLogger().info("[LiteMotto Debug] 玩家 " + player.getName() + " 加入服务器");
+                Bukkit.getLogger().info("[LiteMotto Debug] UUID: " + player.getUniqueId());
+                Bukkit.getLogger().info("[LiteMotto Debug] 格言生成状态: 失败");
+                Bukkit.getLogger().info("[LiteMotto Debug] 可能原因: 网络问题或API响应错误");
+                Bukkit.getLogger().info("[LiteMotto Debug] 尝试时间: " + new java.util.Date());
                 Bukkit.getLogger().info("======================================");
             }
         });

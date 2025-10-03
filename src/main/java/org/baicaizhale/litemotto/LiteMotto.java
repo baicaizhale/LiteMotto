@@ -40,12 +40,12 @@ public class LiteMotto extends JavaPlugin {
                             recentMottoManager.addMotto(motto); // 保存格言
                             
                             // 输出详细调试信息到控制台
-                            getLogger().info("========== LiteMotto Debug ==========");
-                            getLogger().info("[Debug] 命令执行者: " + sender.getName());
-                            getLogger().info("[Debug] 格言生成成功: " + motto);
-                            getLogger().info("[Debug] 格言长度: " + motto.length() + " 字符");
-                            getLogger().info("[Debug] 最近格言列表大小: " + recentMottoManager.getRecentMottos().size());
-                            getLogger().info("[Debug] 格言生成时间: " + new java.util.Date());
+                            getLogger().info("========== LiteMotto 调试信息 ==========");
+                            getLogger().info("[LiteMotto Debug] 命令执行者: " + sender.getName());
+                            getLogger().info("[LiteMotto Debug] 格言生成成功: " + motto);
+                            getLogger().info("[LiteMotto Debug] 格言长度: " + motto.length() + " 字符");
+                            getLogger().info("[LiteMotto Debug] 最近格言列表大小: " + recentMottoManager.getRecentMottos().size());
+                            getLogger().info("[LiteMotto Debug] 格言生成时间: " + new java.util.Date());
                             getLogger().info("======================================");
 
                             // 如果命令执行者是玩家且处于调试模式，发送详细调试信息
@@ -64,10 +64,10 @@ public class LiteMotto extends JavaPlugin {
                             
                             // 输出详细调试信息到控制台
                             getLogger().info("========== LiteMotto Debug ==========");
-                            getLogger().info("[Debug] 命令执行者: " + sender.getName());
-                            getLogger().info("[Debug] 格言生成状态: 失败");
-                            getLogger().info("[Debug] 可能原因: 网络问题或API响应错误");
-                            getLogger().info("[Debug] 尝试时间: " + new java.util.Date());
+                            getLogger().info("[LiteMotto Debug] 命令执行者: " + sender.getName());
+                            getLogger().info("[LiteMotto Debug] 格言生成状态: 失败");
+                            getLogger().info("[LiteMotto Debug] 可能原因: 网络问题或API响应错误");
+                            getLogger().info("[LiteMotto Debug] 尝试时间: " + new java.util.Date());
                             getLogger().info("======================================");
 
                             // 如果命令执行者是玩家且处于调试模式，发送详细调试信息
@@ -93,10 +93,10 @@ public class LiteMotto extends JavaPlugin {
                     boolean isDebugMode = DebugManager.toggleDebugMode(player);
                     if (isDebugMode) {
                         player.sendMessage(PlayerJoinListener.colorize("&a已开启调试模式，你将收到简短的调试信息。"));
-                        getLogger().info("[Debug] 玩家 " + player.getName() + " 开启了调试模式");
+                        getLogger().info("[LiteMotto Debug] 玩家 " + player.getName() + " 开启了调试模式");
                     } else {
                         player.sendMessage(PlayerJoinListener.colorize("&c已关闭调试模式。"));
-                        getLogger().info("[Debug] 玩家 " + player.getName() + " 关闭了调试模式");
+                        getLogger().info("[LiteMotto Debug] 玩家 " + player.getName() + " 关闭了调试模式");
                     }
                     return true;
                 }
