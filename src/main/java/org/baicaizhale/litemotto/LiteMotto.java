@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 public class LiteMotto extends JavaPlugin {
     private static LiteMotto instance;
     private static RecentMottoManager recentMottoManager;
+    private ConfigWatcher configWatcher;
 
     @Override
     public void onEnable() {
@@ -24,8 +25,12 @@ public class LiteMotto extends JavaPlugin {
         // 初始化 bStats
         int pluginId = 25873; // bStats 插件 ID
         Metrics metrics = new Metrics(this, pluginId);
+
+        // 启动配置文件监听器
+        configWatcher = new ConfigWatcher(this, new java.io.File(getDataFolder(), "config.yml"));
+        getServer().getScheduler().runTaskAsynchronously(this, configWatcher);
     }
-    
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("litemotto")) {
@@ -118,6 +123,9 @@ public class LiteMotto extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (configWatcher != null) {
+            configWatcher.stopWatching();
+        }
         instance = null;
     }
 
