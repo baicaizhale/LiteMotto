@@ -21,7 +21,7 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         Bukkit.getScheduler().runTaskAsynchronously(LiteMotto.getInstance(), () -> {
-            String motto = fetchMottoFromDeepSeek();
+            String motto = fetchMottoFromAI();
             if (motto != null) {
                 String prefix = LiteMotto.getInstance().getConfig().getString("prefix", "&6今日格言: &f");
                 player.sendMessage(colorize(prefix + motto));
@@ -32,7 +32,7 @@ public class PlayerJoinListener implements Listener {
         });
     }
 
-    private String fetchMottoFromDeepSeek() {
+    private String fetchMottoFromAI() {
         String lastResponse = null; // 用于异常时打印完整响应
         try {
             // 从 config.yml 读取配置
