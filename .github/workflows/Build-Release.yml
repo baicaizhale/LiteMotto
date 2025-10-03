@@ -20,11 +20,30 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: 编译测试
-        run: mvn -B verify
+      - name: 生成短 SHA
+        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
+        id: sha
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
+      - name: 设置快照版本
+        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
+        run: |
+          mvn -B versions:set \
+              -DnewVersion=1.0.0-${{ steps.sha.outputs.SHORT_SHA }}-SNAPSHOT \
+              -DgenerateBackupPoms=false
 
-      - name: 自动设置版本
+      - name: 编译测试 & 打包快照
+        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
+        run: mvn -B package
+
+      - name: 上传快照包
+        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: litemotto-${{ steps.sha.outputs.SHORT_SHA }}
+          path: target/*.jar
+
+      - name: 设置发布版本
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
           VERSION=${GITHUB_REF_NAME#v}
