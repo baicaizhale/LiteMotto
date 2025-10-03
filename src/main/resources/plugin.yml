@@ -13,6 +13,12 @@ commands:
       /litemotto debug - 切换调试模式
       /litemotto reload - 重载插件配置
 permissions:
+  litemotto.gen:
+    description: 允许玩家生成格言
+    default: op
+  litemotto.debug:
+    description: 允许玩家切换调试模式
+    default: op
   litemotto.reload:
     description: 允许玩家重载 LiteMotto 插件配置
     default: op

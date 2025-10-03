@@ -37,6 +37,10 @@ public class LiteMotto extends JavaPlugin {
         if (command.getName().equalsIgnoreCase("litemotto")) {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("gen")) {
+                    if (!sender.hasPermission("litemotto.gen")) {
+                        sender.sendMessage(PlayerJoinListener.colorize("&c你没有权限执行此命令。"));
+                        return true;
+                    }
                     // 异步获取格言
                     getServer().getScheduler().runTaskAsynchronously(this, () -> {
                         String motto = PlayerJoinListener.fetchMottoFromAI();
@@ -79,6 +83,10 @@ public class LiteMotto extends JavaPlugin {
                     });
                     return true;
                 } else if (args[0].equalsIgnoreCase("debug")) {
+                    if (!sender.hasPermission("litemotto.debug")) {
+                        sender.sendMessage(PlayerJoinListener.colorize("&c你没有权限执行此命令。"));
+                        return true;
+                    }
                     // 切换调试模式
                     if (!(sender instanceof Player)) {
                         sender.sendMessage(PlayerJoinListener.colorize("&c只有玩家可以切换调试模式。"));
