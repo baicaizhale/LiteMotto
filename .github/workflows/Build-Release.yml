@@ -1,4 +1,4 @@
-name: Build and Release
+name: CI-Build & Release
 
 on:
   push:
@@ -14,17 +14,23 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
           cache: maven
 
-      - name: 构建
+      - name: 编译测试
         run: mvn -B verify
 
-      - name: 构建（跳过测试）
+
+      - name: 自动设置版本
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          mvn -B versions:set -DnewVersion="$VERSION" -DgenerateBackupPoms=false
+
+      - name: 重新构建（跳过测试）
         if: startsWith(github.ref, 'refs/tags/v')
         run: mvn -B package -DskipTests
 
@@ -34,5 +40,5 @@ jobs:
         with:
           files: target/*.jar
           tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          name:  Release ${{ github.ref_name }}
           generate_release_notes: true
