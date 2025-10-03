@@ -25,6 +25,7 @@ public class LiteMotto extends JavaPlugin {
         // 初始化 bStats
         int pluginId = 25873; // bStats 插件 ID
         Metrics metrics = new Metrics(this, pluginId);
+        DebugManager.sendDebugMessage("&aLiteMotto 插件已启用！");
 
         // 启动配置文件监听器
         configWatcher = new ConfigWatcher(this, new java.io.File(getDataFolder(), "config.yml"));
@@ -45,13 +46,13 @@ public class LiteMotto extends JavaPlugin {
                             recentMottoManager.addMotto(motto); // 保存格言
                             
                             // 输出详细调试信息到控制台
-                            getLogger().info("========== LiteMotto 调试信息 ==========");
-                            getLogger().info("[LiteMotto Debug] 命令执行者: " + sender.getName());
-                            getLogger().info("[LiteMotto Debug] 格言生成成功: " + motto);
-                            getLogger().info("[LiteMotto Debug] 格言长度: " + motto.length() + " 字符");
-                            getLogger().info("[LiteMotto Debug] 最近格言列表大小: " + recentMottoManager.getRecentMottos().size());
-                            getLogger().info("[LiteMotto Debug] 格言生成时间: " + new java.util.Date());
-                            getLogger().info("======================================");
+                            DebugManager.sendDebugMessage("&7========== LiteMotto 调试信息 ==========");
+                            DebugManager.sendDebugMessage("&f命令执行者: &e" + sender.getName());
+                            DebugManager.sendDebugMessage("&a格言生成成功: &f" + motto);
+                            DebugManager.sendDebugMessage("&f格言长度: &f" + motto.length() + " &f字符");
+                            DebugManager.sendDebugMessage("&f最近格言列表大小: &f" + recentMottoManager.getRecentMottos().size());
+                            DebugManager.sendDebugMessage("&f格言生成时间: &f" + new java.util.Date());
+                            DebugManager.sendDebugMessage("&7======================================");
 
                             // 向所有处于调试模式的玩家发送详细调试信息
                             DebugManager.sendDebugMessage("&a格言生成成功");
@@ -63,12 +64,12 @@ public class LiteMotto extends JavaPlugin {
                             sender.sendMessage(PlayerJoinListener.colorize("&c获取格言失败，请稍后再试。"));
                             
                             // 输出详细调试信息到控制台
-                            getLogger().info("========== LiteMotto Debug ==========");
-                            getLogger().info("[LiteMotto Debug] 命令执行者: " + sender.getName());
-                            getLogger().info("[LiteMotto Debug] 格言生成状态: 失败");
-                            getLogger().info("[LiteMotto Debug] 可能原因: 网络问题或API响应错误");
-                            getLogger().info("[LiteMotto Debug] 尝试时间: " + new java.util.Date());
-                            getLogger().info("======================================");
+                            DebugManager.sendDebugMessage("&7========== LiteMotto Debug ==========");
+                            DebugManager.sendDebugMessage("&f命令执行者: &e" + sender.getName());
+                            DebugManager.sendDebugMessage("&c格言生成状态: 失败");
+                            DebugManager.sendDebugMessage("&f可能原因: &e网络问题或API响应错误");
+                            DebugManager.sendDebugMessage("&f尝试时间: &e" + new java.util.Date());
+                            DebugManager.sendDebugMessage("&7======================================");
 
                             // 向所有处于调试模式的玩家发送详细调试信息
                             DebugManager.sendDebugMessage("&c格言生成失败");
@@ -102,7 +103,7 @@ public class LiteMotto extends JavaPlugin {
                     }
                     reloadConfig();
                     sender.sendMessage(PlayerJoinListener.colorize("&aLiteMotto 配置已重载。"));
-                    getLogger().info("[LiteMotto Debug] 插件配置已由 " + sender.getName() + " 重载。");
+                    DebugManager.sendDebugMessage("&a插件配置已由 &f" + sender.getName() + " &a重载。");
                     return true;
                 }
             }
@@ -116,6 +117,7 @@ public class LiteMotto extends JavaPlugin {
         if (configWatcher != null) {
             configWatcher.stopWatching();
         }
+        DebugManager.sendDebugMessage("&cLiteMotto 插件已禁用！");
         instance = null;
     }
 

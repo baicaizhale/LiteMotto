@@ -1,6 +1,7 @@
 package org.baicaizhale.litemotto;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,8 @@ public class ConfigWatcher implements Runnable {
     private final Path configPath;
     private WatchService watcher;
     private boolean running = true;
+    private long lastReloadTime = 0;
+    private static final long RELOAD_DEBOUNCE_MILLIS = 1000; // 1秒防抖时间
 
     public ConfigWatcher(LiteMotto plugin, File configFile) {
         this.plugin = plugin;
@@ -21,7 +24,7 @@ public class ConfigWatcher implements Runnable {
             this.watcher = FileSystems.getDefault().newWatchService();
             // 注册父目录以监听文件修改事件
             this.configPath.getParent().register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
-            plugin.getLogger().info("[LiteMotto Debug] 已开始监听配置文件: " + configPath.toString());
+            DebugManager.sendDebugMessage("&7已开始监听配置文件: &f" + configPath.toString());
         } catch (IOException e) {
             plugin.getLogger().severe("[LiteMotto Debug] 无法初始化配置文件监听器: " + e.getMessage());
         }
@@ -46,10 +49,14 @@ public class ConfigWatcher implements Runnable {
                     if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
                         Path changedFile = (Path) event.context();
                         if (configPath.getFileName().equals(changedFile)) {
-                            Bukkit.getScheduler().runTask(plugin, () -> {
-                                plugin.reloadConfig();
-                                plugin.getLogger().info("[LiteMotto Debug] 配置文件已自动重载。");
-                            });
+                            long currentTime = System.currentTimeMillis();
+                            if (currentTime - lastReloadTime > RELOAD_DEBOUNCE_MILLIS) {
+                                lastReloadTime = currentTime;
+                                Bukkit.getScheduler().runTask(plugin, () -> {
+                                    plugin.reloadConfig();
+                                    DebugManager.sendDebugMessage(ChatColor.YELLOW + "配置文件已自动重载。");
+                                });
+                            }
                         }
                     }
                 }
@@ -62,7 +69,7 @@ public class ConfigWatcher implements Runnable {
         this.running = false;
         try {
             watcher.close();
-            plugin.getLogger().info("[LiteMotto Debug] 配置文件监听器已停止。");
+            DebugManager.sendDebugMessage("&7配置文件监听器已停止。");
         } catch (IOException e) {
             plugin.getLogger().severe("[LiteMotto Debug] 关闭配置文件监听器失败: " + e.getMessage());
         }

@@ -34,14 +34,14 @@ public class PlayerJoinListener implements Listener {
                 DebugManager.sendDebugMessage("&f已添加到最近格言列表，当前列表大小: &e" + LiteMotto.getRecentMottoManager().getRecentMottos().size());
                 
                 // 输出详细调试信息到控制台
-                Bukkit.getLogger().info("========== LiteMotto 调试信息 ==========");
-                Bukkit.getLogger().info("[LiteMotto Debug] 玩家 " + player.getName() + " 加入服务器");
-                Bukkit.getLogger().info("[LiteMotto Debug] UUID: " + player.getUniqueId());
-                Bukkit.getLogger().info("[LiteMotto Debug] 格言生成成功: " + motto);
-                Bukkit.getLogger().info("[LiteMotto Debug] 格言长度: " + motto.length() + " 字符");
-                Bukkit.getLogger().info("[LiteMotto Debug] 最近格言列表大小: " + LiteMotto.getRecentMottoManager().getRecentMottos().size());
-                Bukkit.getLogger().info("[LiteMotto Debug] 格言生成时间: " + new java.util.Date());
-                Bukkit.getLogger().info("======================================");
+                DebugManager.sendDebugMessage("&7========== LiteMotto 调试信息 ==========");
+                DebugManager.sendDebugMessage("&7玩家 &f" + player.getName() + " &7加入服务器");
+                DebugManager.sendDebugMessage("&7UUID: &f" + player.getUniqueId());
+                DebugManager.sendDebugMessage("&a格言生成成功: &f" + motto);
+                DebugManager.sendDebugMessage("&7格言长度: &f" + motto.length() + " &7字符");
+                DebugManager.sendDebugMessage("&7最近格言列表大小: &f" + LiteMotto.getRecentMottoManager().getRecentMottos().size());
+                DebugManager.sendDebugMessage("&7格言生成时间: &f" + new java.util.Date());
+                DebugManager.sendDebugMessage("&7======================================");
             } else {
                 player.sendMessage(colorize("&c获取格言失败，请稍后再试。"));
                 
@@ -51,13 +51,13 @@ public class PlayerJoinListener implements Listener {
                 DebugManager.sendDebugMessage("&f请检查控制台获取更多错误信息");
                 
                 // 输出详细调试信息到控制台
-                Bukkit.getLogger().info("=========== LiteMotto Debug ==========");
-                Bukkit.getLogger().info("[LiteMotto Debug] 玩家 " + player.getName() + " 加入服务器");
-                Bukkit.getLogger().info("[LiteMotto Debug] UUID: " + player.getUniqueId());
-                Bukkit.getLogger().info("[LiteMotto Debug] 格言生成状态: 失败");
-                Bukkit.getLogger().info("[LiteMotto Debug] 可能原因: 网络问题或API响应错误");
-                Bukkit.getLogger().info("[LiteMotto Debug] 尝试时间: " + new java.util.Date());
-                Bukkit.getLogger().info("======================================");
+                DebugManager.sendDebugMessage("&7=========== LiteMotto Debug ==========");
+                DebugManager.sendDebugMessage("&7玩家 &f" + player.getName() + " &7加入服务器");
+                DebugManager.sendDebugMessage("&7UUID: &f" + player.getUniqueId());
+                DebugManager.sendDebugMessage("&c格言生成状态: 失败");
+                DebugManager.sendDebugMessage("&7可能原因: &e网络问题或API响应错误");
+                DebugManager.sendDebugMessage("&7尝试时间: &f" + new java.util.Date());
+                DebugManager.sendDebugMessage("&7======================================");
             }
         });
     }
@@ -174,5 +174,46 @@ public class PlayerJoinListener implements Listener {
     // 颜色代码转换方法：将 & 替换成 §
     public static String colorize(String message) {
         return message.replace("&", "§");
+    }
+
+    /**
+     * 将带有Minecraft颜色代码的字符串转换为带有ANSI颜色代码的字符串，用于控制台输出。
+     * @param message 带有Minecraft颜色代码的字符串。
+     * @return 带有ANSI颜色代码的字符串。
+     */
+    public static String toAnsiColor(String message) {
+        String coloredMessage = colorize(message); // 先将 & 转换为 §
+        StringBuilder ansiMessage = new StringBuilder();
+        for (int i = 0; i < coloredMessage.length(); i++) {
+            char c = coloredMessage.charAt(i);
+            if (c == '§' && i + 1 < coloredMessage.length()) {
+                char colorCode = coloredMessage.charAt(i + 1);
+                switch (colorCode) {
+                    case '0': ansiMessage.append("\u001B[30m"); break; // Black
+                    case '1': ansiMessage.append("\u001B[34m"); break; // Dark Blue
+                    case '2': ansiMessage.append("\u001B[32m"); break; // Dark Green
+                    case '3': ansiMessage.append("\u001B[36m"); break; // Dark Aqua
+                    case '4': ansiMessage.append("\u001B[31m"); break; // Dark Red
+                    case '5': ansiMessage.append("\u001B[35m"); break; // Dark Purple
+                    case '6': ansiMessage.append("\u001B[33m"); break; // Gold
+                    case '7': ansiMessage.append("\u001B[37m"); break; // Gray
+                    case '8': ansiMessage.append("\u001B[90m"); break; // Dark Gray
+                    case '9': ansiMessage.append("\u001B[94m"); break; // Blue
+                    case 'a': ansiMessage.append("\u001B[92m"); break; // Green
+                    case 'b': ansiMessage.append("\u001B[96m"); break; // Aqua
+                    case 'c': ansiMessage.append("\u001B[91m"); break; // Red
+                    case 'd': ansiMessage.append("\u001B[95m"); break; // Light Purple
+                    case 'e': ansiMessage.append("\u001B[93m"); break; // Yellow
+                    case 'f': ansiMessage.append("\u001B[97m"); break; // White
+                    case 'r': ansiMessage.append("\u001B[0m"); break;  // Reset
+                    default: ansiMessage.append(c); // If not a recognized color code, append as is
+                }
+                i++; // Skip the color code character
+            } else {
+                ansiMessage.append(c);
+            }
+        }
+        ansiMessage.append("\u001B[0m"); // Reset color at the end
+        return ansiMessage.toString();
     }
 }
