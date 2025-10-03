@@ -29,19 +29,48 @@ public class LiteMotto extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("litemotto")) {
-            if (args.length > 0 && args[0].equalsIgnoreCase("gen")) {
-                // 异步获取格言
-                getServer().getScheduler().runTaskAsynchronously(this, () -> {
-                    String motto = PlayerJoinListener.fetchMottoFromAI();
-                    if (motto != null) {
-                        String prefix = getConfig().getString("prefix", "&6今日格言: &f");
-                        sender.sendMessage(PlayerJoinListener.colorize(prefix + motto));
-                        recentMottoManager.addMotto(motto); // 保存格言
-                    } else {
-                        sender.sendMessage(PlayerJoinListener.colorize("&c获取格言失败，请稍后再试。"));
+            if (args.length > 0) {
+                if (args[0].equalsIgnoreCase("gen")) {
+                    // 异步获取格言
+                    getServer().getScheduler().runTaskAsynchronously(this, () -> {
+                        String motto = PlayerJoinListener.fetchMottoFromAI();
+                        if (motto != null) {
+                            String prefix = getConfig().getString("prefix", "&6今日格言: &f");
+                            sender.sendMessage(PlayerJoinListener.colorize(prefix + motto));
+                            recentMottoManager.addMotto(motto); // 保存格言
+                            
+                            // 如果有调试模式玩家，输出调试信息
+                            if (DebugManager.hasDebugPlayers()) {
+                                getLogger().info("[Debug] 生成格言: " + motto);
+                            }
+                        } else {
+                            sender.sendMessage(PlayerJoinListener.colorize("&c获取格言失败，请稍后再试。"));
+                            
+                            // 如果有调试模式玩家，输出调试信息
+                            if (DebugManager.hasDebugPlayers()) {
+                                getLogger().info("[Debug] 格言生成失败");
+                            }
+                        }
+                    });
+                    return true;
+                } else if (args[0].equalsIgnoreCase("debug")) {
+                    // 切换调试模式
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage(PlayerJoinListener.colorize("&c只有玩家可以切换调试模式。"));
+                        return true;
                     }
-                });
-                return true;
+                    
+                    Player player = (Player) sender;
+                    boolean isDebugMode = DebugManager.toggleDebugMode(player);
+                    if (isDebugMode) {
+                        player.sendMessage(PlayerJoinListener.colorize("&a已开启调试模式，你将收到简短的调试信息。"));
+                        getLogger().info("[Debug] 玩家 " + player.getName() + " 开启了调试模式");
+                    } else {
+                        player.sendMessage(PlayerJoinListener.colorize("&c已关闭调试模式。"));
+                        getLogger().info("[Debug] 玩家 " + player.getName() + " 关闭了调试模式");
+                    }
+                    return true;
+                }
             }
             return false;
         }

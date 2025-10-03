@@ -26,8 +26,28 @@ public class PlayerJoinListener implements Listener {
                 String prefix = LiteMotto.getInstance().getConfig().getString("prefix", "&6今日格言: &f");
                 player.sendMessage(colorize(prefix + motto));
                 LiteMotto.getRecentMottoManager().addMotto(motto); // 保存格言
+                
+                // 如果玩家处于调试模式，发送调试信息
+                if (DebugManager.isInDebugMode(player)) {
+                    player.sendMessage(colorize("&7[Debug] 格言已生成并保存"));
+                }
+                
+                // 如果有调试模式玩家，输出调试信息到控制台
+                if (DebugManager.hasDebugPlayers()) {
+                    Bukkit.getLogger().info("[Debug] 玩家 " + player.getName() + " 加入服务器，生成格言: " + motto);
+                }
             } else {
                 player.sendMessage(colorize("&c获取格言失败，请稍后再试。"));
+                
+                // 如果玩家处于调试模式，发送调试信息
+                if (DebugManager.isInDebugMode(player)) {
+                    player.sendMessage(colorize("&7[Debug] 格言生成失败"));
+                }
+                
+                // 如果有调试模式玩家，输出调试信息到控制台
+                if (DebugManager.hasDebugPlayers()) {
+                    Bukkit.getLogger().info("[Debug] 玩家 " + player.getName() + " 加入服务器，格言生成失败");
+                }
             }
         });
     }
