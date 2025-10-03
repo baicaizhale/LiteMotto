@@ -32,7 +32,7 @@ public class PlayerJoinListener implements Listener {
         });
     }
 
-    private String fetchMottoFromAI() {
+    public static String fetchMottoFromAI() {
         String lastResponse = null; // 用于异常时打印完整响应
         try {
             // 从 config.yml 读取配置
@@ -136,7 +136,7 @@ public class PlayerJoinListener implements Listener {
     }
 
     // 颜色代码转换方法：将 & 替换成 §
-    private String colorize(String message) {
+    public static String colorize(String message) {
         return message.replace("&", "§");
     }
 }
