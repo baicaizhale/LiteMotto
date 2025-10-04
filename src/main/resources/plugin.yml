@@ -12,6 +12,7 @@ commands:
       /litemotto gen - 生成一条格言并发送给执行者
       /litemotto debug - 切换调试模式
       /litemotto reload - 重载插件配置
+      /litemotto update - 检查插件更新
 permissions:
   litemotto.gen:
     description: 允许玩家生成格言
@@ -21,4 +22,7 @@ permissions:
     default: op
   litemotto.reload:
     description: 允许玩家重载 LiteMotto 插件配置
+    default: op
+  litemotto.update:
+    description: 允许玩家检查插件更新
     default: op

@@ -1,5 +1,6 @@
 package org.baicaizhale.litemotto;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -20,6 +21,17 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        
+        // 检查是否启用了管理员进服检查更新功能
+        if (LiteMotto.getInstance().getConfig().getBoolean("update-check.on-admin-join", true)) {
+            // 检查玩家是否有权限接收更新通知
+            if (player.hasPermission("litemotto.update")) {
+                // 使用更新检查器检查更新（仅向该玩家发送通知）
+                UpdateChecker updateChecker = new UpdateChecker(LiteMotto.getInstance(), true);
+                updateChecker.checkForUpdates();
+            }
+        }
+        
         Bukkit.getScheduler().runTaskAsynchronously(LiteMotto.getInstance(), () -> {
             String motto = fetchMottoFromAI();
             if (motto != null) {

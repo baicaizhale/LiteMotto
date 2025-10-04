@@ -10,6 +10,7 @@ public class LiteMotto extends JavaPlugin {
     private static LiteMotto instance;
     private static RecentMottoManager recentMottoManager;
     private ConfigWatcher configWatcher;
+    private UpdateChecker updateChecker;
 
     @Override
     public void onEnable() {
@@ -30,6 +31,13 @@ public class LiteMotto extends JavaPlugin {
         // 启动配置文件监听器
         configWatcher = new ConfigWatcher(this, new java.io.File(getDataFolder(), "config.yml"));
         getServer().getScheduler().runTaskAsynchronously(this, configWatcher);
+        
+        // 初始化更新检查器
+        updateChecker = new UpdateChecker(this, true, false);
+        // 根据配置决定是否在启动时检查更新
+        if (getConfig().getBoolean("update-check.on-startup", true)) {
+            updateChecker.checkForUpdates();
+        }
     }
 
     @Override
@@ -113,6 +121,17 @@ public class LiteMotto extends JavaPlugin {
                     sender.sendMessage(PlayerJoinListener.colorize("&aLiteMotto 配置已重载。"));
                     DebugManager.sendDebugMessage("&a插件配置已由 &f" + sender.getName() + " &a重载。");
                     return true;
+                } else if (args[0].equalsIgnoreCase("update")) {
+                    // 检查更新
+                    if (!sender.hasPermission("litemotto.update")) {
+                        sender.sendMessage(PlayerJoinListener.colorize("&c你没有权限执行此命令。"));
+                        return true;
+                    }
+                    
+                    sender.sendMessage(PlayerJoinListener.colorize("&6正在检查更新..."));
+                    UpdateChecker manualUpdateChecker = new UpdateChecker(this, false, true);
+                    manualUpdateChecker.checkForUpdates();
+                    return true;
                 }
             }
             return false;
@@ -135,5 +154,9 @@ public class LiteMotto extends JavaPlugin {
 
     public static RecentMottoManager getRecentMottoManager() {
         return recentMottoManager;
+    }
+    
+    public UpdateChecker getUpdateChecker() {
+        return updateChecker;
     }
 }
