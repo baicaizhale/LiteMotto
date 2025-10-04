@@ -130,7 +130,12 @@ public class LiteMotto extends JavaPlugin {
                     
                     sender.sendMessage(PlayerJoinListener.colorize("&6正在检查更新..."));
                     UpdateChecker manualUpdateChecker = new UpdateChecker(this, false, true);
-                    manualUpdateChecker.checkForUpdates();
+                    // 如果是玩家执行的命令，确保通知该玩家更新信息
+                    if (sender instanceof Player) {
+                        manualUpdateChecker.checkForUpdates((Player) sender);
+                    } else {
+                        manualUpdateChecker.checkForUpdates();
+                    }
                     return true;
                 }
             }

@@ -40,6 +40,14 @@ public class UpdateChecker {
      * 检查更新
      */
     public void checkForUpdates() {
+        checkForUpdates(null);
+    }
+    
+    /**
+     * 检查更新并向指定玩家发送信息
+     * @param player 要接收更新信息的玩家，如果为null则使用默认行为
+     */
+    public void checkForUpdates(Player player) {
         // 手动检查不受配置限制
         if (!isManualCheck) {
             if (!plugin.getConfig().getBoolean("update-check.enabled", true)) {
@@ -52,7 +60,11 @@ public class UpdateChecker {
         if (localVersion.startsWith("#")) {
             // 快照版本不检查更新
             if (isManualCheck) {
-                plugin.getLogger().info("当前为快照版本，跳过更新检查");
+                if (player != null) {
+                    player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &e当前为快照版本，跳过更新检查"));
+                } else {
+                    plugin.getLogger().info("当前为快照版本，跳过更新检查");
+                }
             }
             return;
         }
@@ -64,7 +76,11 @@ public class UpdateChecker {
                 if (releaseInfo == null) {
                     // 只有在手动检查或自动检查出错时才记录日志
                     if (isManualCheck) {
-                        plugin.getLogger().info("检查更新失败，无法获取最新版本信息");
+                        if (player != null) {
+                            player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &c检查更新失败，无法获取最新版本信息"));
+                        } else {
+                            plugin.getLogger().info("检查更新失败，无法获取最新版本信息");
+                        }
                     } else {
                         plugin.getLogger().warning("自动检查更新失败，无法获取最新版本信息");
                     }
@@ -78,7 +94,11 @@ public class UpdateChecker {
                 if (localVersion.equals(remoteVersion)) {
                     // 只有在手动检查时才提示已是最新版本
                     if (isManualCheck) {
-                        plugin.getLogger().info("LiteMotto 插件已是最新版本 (" + localVersion + ")");
+                        if (player != null) {
+                            player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &eLiteMotto 插件已是最新版本 (&f" + localVersion + "&e)"));
+                        } else {
+                            plugin.getLogger().info("LiteMotto 插件已是最新版本 (" + localVersion + ")");
+                        }
                     }
                     return;
                 }
@@ -103,24 +123,36 @@ public class UpdateChecker {
                 }
                 
                 // 控制台提醒（发现新版本时总是提醒）
-                plugin.getLogger().info("发现新版本: " + remoteVersion + " (当前版本: " + localVersion + ")");
-                plugin.getLogger().info("原始下载链接: " + downloadUrl);
-                if (mirrorUrl != null) {
-                    plugin.getLogger().info("镜像下载链接: " + mirrorUrl);
-                }
-                
-                // 向有权限的在线玩家发送提醒
-                if (checkOnJoin) {
-                    String finalDownloadUrl = downloadUrl;
-                    String finalMirrorUrl = mirrorUrl;
-                    Bukkit.getScheduler().runTask(plugin, () -> 
-                            notifyPlayers(remoteVersion, localVersion, finalDownloadUrl, finalMirrorUrl));
+                if (player != null) {
+                    player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &e发现新版本: &f" + remoteVersion + " &e(当前版本: &f" + localVersion + "&e)"));
+                    player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &e原始下载链接: &f" + downloadUrl));
+                    if (mirrorUrl != null) {
+                        player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &e镜像下载链接: &f" + mirrorUrl));
+                    }
+                } else {
+                    plugin.getLogger().info("发现新版本: " + remoteVersion + " (当前版本: " + localVersion + ")");
+                    plugin.getLogger().info("原始下载链接: " + downloadUrl);
+                    if (mirrorUrl != null) {
+                        plugin.getLogger().info("镜像下载链接: " + mirrorUrl);
+                    }
+                    
+                    // 向有权限的在线玩家发送提醒
+                    if (checkOnJoin) {
+                        String finalDownloadUrl = downloadUrl;
+                        String finalMirrorUrl = mirrorUrl;
+                        Bukkit.getScheduler().runTask(plugin, () -> 
+                                notifyPlayers(remoteVersion, localVersion, finalDownloadUrl, finalMirrorUrl));
+                    }
                 }
                 
             } catch (Exception e) {
                 // 只有在手动检查或自动检查出错时才记录日志
                 if (isManualCheck) {
-                    plugin.getLogger().warning("检查更新时发生错误: " + e.getMessage());
+                    if (player != null) {
+                        player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &c检查更新时发生错误: " + e.getMessage()));
+                    } else {
+                        plugin.getLogger().warning("检查更新时发生错误: " + e.getMessage());
+                    }
                 } else {
                     plugin.getLogger().warning("自动检查更新时发生错误: " + e.getMessage());
                 }
