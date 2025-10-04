@@ -1,9 +1,9 @@
 name: LiteMotto
-version: 3.4.5
+version: 3.4.6
 main: org.baicaizhale.litemotto.LiteMotto
 api-version: 1.18
 description: 一个在玩家加入游戏时发送格言的插件
-author: baicaizhale
+author: baicaizhale & zip8919
 
 commands:
   litemotto:
