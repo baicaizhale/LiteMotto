@@ -80,3 +80,4 @@ prefix: "§bLiteMotto §7> §f"
 ---
 
 本插件与 Cloudflare AI 官方无直接关联，仅为个人项目。
+![Bstats](https://bstats.org/signatures/bukkit/LiteMotto.svg)
