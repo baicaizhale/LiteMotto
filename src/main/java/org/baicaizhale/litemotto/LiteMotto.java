@@ -1,6 +1,7 @@
 package org.baicaizhale.litemotto;
 
 import org.baicaizhale.litemotto.Metrics.Metrics; // 添加 bStats 导入
+import org.baicaizhale.litemotto.api.LiteMottoAPI;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -38,6 +39,9 @@ public class LiteMotto extends JavaPlugin {
         if (getConfig().getBoolean("update-check.on-startup", true)) {
             updateChecker.checkForUpdates();
         }
+        
+        // 注册API服务
+        getServer().getServicesManager().register(LiteMottoAPI.class, new LiteMottoAPI(), this, org.bukkit.plugin.ServicePriority.Normal);
     }
 
     @Override
