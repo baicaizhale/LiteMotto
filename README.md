@@ -59,6 +59,7 @@ LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器
 
 ```yaml
 # Cloudflare AI 配置（可选，带有默认配置，不配置也能使用基础功能）
+# 如果提供了api-key，account-id可以自动获取
 account-id: "你的 Cloudflare 账户 ID"
 api-key: "你的 Cloudflare API Key"
 model: "@cf/openai/gpt-oss-120b"
@@ -71,8 +72,10 @@ prefix: "§bLiteMotto §7> §f"
 #### Cloudflare AI 配置（可选）
 - **account-id**: 您的 Cloudflare 账户 ID
   - 获取方式：登录 Cloudflare 控制台 → 右上角账户头像 → 复制账户 ID
+  - **注意**: 如果提供了 `api-key`，插件将尝试自动获取 `account-id`，此项可留空。
 - **api-key**: Cloudflare API 密钥
   - 获取方式：Cloudflare 控制台 → 左侧菜单 "AI" → "管理 API 令牌" → 创建 API 令牌
+  - **注意**: 提供此项后，插件将尝试自动获取 `account-id`。
 - **model**: AI 模型选择
   - **推荐**: `@cf/openai/gpt-oss-120b`（效果最佳）
   - **备选**: `@cf/meta/llama-3-8b-instruct`（响应更快）
