@@ -33,6 +33,7 @@ LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器
 - ⚙ **可配置前缀 & 提示词**，自由定制消息风格  
 - 🚀 **异步获取数据**，不会影响服务器性能  
 - 🔄 **自动兼容 Cloudflare 多种模型返回格式**，无需手动切换
+- ☁️ **Cloudflare集成优化**: 添加通过API Key自动获取account-id功能
 
 ## 📦 安装方法
 
