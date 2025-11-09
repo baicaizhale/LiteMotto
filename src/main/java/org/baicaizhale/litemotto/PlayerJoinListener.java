@@ -1,6 +1,6 @@
 package org.baicaizhale.litemotto;
 
-import org.bukkit.ChatColor;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -15,7 +15,7 @@ import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
+
 
 public class PlayerJoinListener implements Listener {
 
