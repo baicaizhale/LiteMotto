@@ -40,8 +40,8 @@ jobs:
         if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-artifact@v4
         with:
-          name: litemotto-#${{ steps.sha.outputs.SHORT_SHA }}
-          path: target/litemotto-*.jar
+          name: Litemotto-#${{ steps.sha.outputs.SHORT_SHA }}
+          path: target/Litemotto-*.jar
 
       - name: 设置发布版本
         if: startsWith(github.ref, 'refs/tags/v')
@@ -57,7 +57,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: target/litemotto-*.jar
+          files: target/Litemotto-*.jar
           tag_name: ${{ github.ref_name }}
           name:  Release ${{ github.ref_name }}
           generate_release_notes: true
