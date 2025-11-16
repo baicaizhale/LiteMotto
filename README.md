@@ -2,7 +2,7 @@
 <img width="256" height="256" alt="icon" src="https://github.com/user-attachments/assets/f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" />
 
 
-# LiteMotto
+# LiteMotto 轻语格言
 
 LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器时发送一句每日格言。格言由 **Cloudflare AI** 生成，支持自定义前缀、颜色代码以及提示词。
 
