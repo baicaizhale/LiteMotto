@@ -1,6 +1,6 @@
 package org.baicaizhale.litemotto;
 
-import org.baicaizhale.litemotto.Metrics.Metrics; // 添加 bStats 导入
+import org.baicaizhale.litemotto.Metrics.Metrics;
 import org.baicaizhale.litemotto.api.LiteMottoAPI;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
@@ -25,7 +25,7 @@ public class LiteMotto extends JavaPlugin {
         this.getCommand("litemotto").setTabCompleter(new LiteMottoTabCompleter());
 
         // 初始化 bStats
-        int pluginId = 25873; // bStats 插件 ID
+        int pluginId = 25873; 
         Metrics metrics = new Metrics(this, pluginId);
         DebugManager.sendDebugMessage("&aLiteMotto 插件已启用！");
 
