@@ -40,17 +40,37 @@ public class Metrics {
 
     public Metrics(Plugin plugin, int serviceId) {
         this.plugin = plugin;
-
-        YamlConfiguration config = loadOrCreateBStatsConfig(plugin);
-
+        // Get the config file
+        File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
+        File configFile = new File(bStatsFolder, "config.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+        if (!config.isSet("serverUuid")) {
+            config.addDefault("enabled", true);
+            config.addDefault("serverUuid", UUID.randomUUID().toString());
+            config.addDefault("logFailedRequests", false);
+            config.addDefault("logSentData", false);
+            config.addDefault("logResponseStatusText", false);
+            // Inform the server owners about bStats
+            config
+                    .options()
+                    .header(
+                            "bStats (https://bStats.org) collects some basic information for plugin authors, like how\n"
+                                    + "many people use their plugin and their total player count. It's recommended to keep bStats\n"
+                                    + "enabled, but if you're not comfortable with this, you can turn this setting off. There is no\n"
+                                    + "performance penalty associated with having metrics enabled, and data sent to bStats is fully\n"
+                                    + "anonymous.")
+                    .copyDefaults(true);
+            try {
+                config.save(configFile);
+            } catch (IOException ignored) {
+            }
+        }
         // Load the data
-        MetricsConfigData configData = loadConfigData(config);
-        boolean enabled = configData.isEnabled();
-        String serverUUID = configData.getServerUUID();
-        boolean logErrors = configData.isLogErrors();
-        boolean logSentData = configData.isLogSentData();
-        boolean logResponseStatusText = configData.isLogResponseStatusText();
-
+        boolean enabled = config.getBoolean("enabled", true);
+        String serverUUID = config.getString("serverUuid");
+        boolean logErrors = config.getBoolean("logFailedRequests", false);
+        boolean logSentData = config.getBoolean("logSentData", false);
+        boolean logResponseStatusText = config.getBoolean("logResponseStatusText", false);
         boolean isFolia = false;
         try {
             isFolia = Class.forName("io.papermc.paper.threadedregions.RegionizedServer") != null;
@@ -83,94 +103,6 @@ public class Metrics {
                         false);
     }
 
-    /**
-     * 封装 Metrics 配置数据。
-     */
-    private static class MetricsConfigData {
-        private final boolean enabled;
-        private final String serverUUID;
-        private final boolean logErrors;
-        private final boolean logSentData;
-        private final boolean logResponseStatusText;
-
-        public MetricsConfigData(boolean enabled, String serverUUID, boolean logErrors, boolean logSentData, boolean logResponseStatusText) {
-            this.enabled = enabled;
-            this.serverUUID = serverUUID;
-            this.logErrors = logErrors;
-            this.logSentData = logSentData;
-            this.logResponseStatusText = logResponseStatusText;
-        }
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public String getServerUUID() {
-            return serverUUID;
-        }
-
-        public boolean isLogErrors() {
-            return logErrors;
-        }
-
-        public boolean isLogSentData() {
-            return logSentData;
-        }
-
-        public boolean isLogResponseStatusText() {
-            return logResponseStatusText;
-        }
-    }
-
-    /**
-     * 从配置文件中加载 Metrics 相关数据。
-     *
-     * @param config YamlConfiguration 对象
-     * @return 包含加载数据的 MetricsConfigData 对象
-     */
-    private MetricsConfigData loadConfigData(YamlConfiguration config) {
-        boolean enabled = config.getBoolean("enabled", true);
-        String serverUUID = config.getString("serverUuid");
-        boolean logErrors = config.getBoolean("logFailedRequests", false);
-        boolean logSentData = config.getBoolean("logSentData", false);
-        boolean logResponseStatusText = config.getBoolean("logResponseStatusText", false);
-        return new MetricsConfigData(enabled, serverUUID, logErrors, logSentData, logResponseStatusText);
-    }
-
-    /**
-     * 加载或创建 bStats 配置文件，并设置默认值。
-     *
-     * @param plugin 插件实例
-     * @return 加载或创建的 YamlConfiguration 对象
-     */
-    private YamlConfiguration loadOrCreateBStatsConfig(Plugin plugin) {
-        File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
-        File configFile = new File(bStatsFolder, "config.yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-
-        if (!config.isSet("serverUuid")) {
-            config.addDefault("enabled", true);
-            config.addDefault("serverUuid", UUID.randomUUID().toString());
-            config.addDefault("logFailedRequests", false);
-            config.addDefault("logSentData", false);
-            config.addDefault("logResponseStatusText", false);
-            // Inform the server owners about bStats
-            config
-                    .options()
-                    .header(
-                            "bStats (https://bStats.org) collects some basic information for plugin authors, like how\n"
-                                    + "many people use their plugin and their total player count. It's recommended to keep bStats\n"
-                                    + "enabled, but if you're not comfortable with this, you can turn this setting off. There is no\n"
-                                    + "performance penalty associated with having metrics enabled, and data sent to bStats is fully\n"
-                                    + "anonymous.")
-                    .copyDefaults(true);
-            try {
-                config.save(configFile);
-            } catch (IOException ignored) {
-            }
-        }
-        return config;
-    }
 
     public void shutdown() {
         metricsBase.shutdown();
@@ -811,4 +743,3 @@ public class Metrics {
     }
 }
 
-

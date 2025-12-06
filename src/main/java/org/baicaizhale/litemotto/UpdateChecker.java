@@ -98,7 +98,7 @@ public class UpdateChecker {
                 } else if (versionComparison > 0) { // 本地版本高于远程版本
                     if (isManualCheck) {
                         if (player != null) {
-                            player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &eLiteMotto 插件版本 (&f" + localVersion + "&e) 高于最新版本 (&f" + remoteVersion + "&e)"));
+                            player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &eLiteMotto 发现本地版本 (&f" + localVersion + "&e) 高于Github发布的最新版本 (&f" + remoteVersion + "&e)？？自己编译的？？"));
                         } else {
                             plugin.getLogger().info("LiteMotto 插件版本 (" + localVersion + ") 高于最新版本 (" + remoteVersion + ")");
                         }
