@@ -37,6 +37,9 @@ LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器
 
 ## 📦 安装方法
 
+### *可以通过视频来学习安装方法：*
+[点击前往Bilibili播放【LiteMotto | 使用指南】](https://www.bilibili.com/video/BV1a2U7BRENa/?share_source=copy_web&vd_source=4d7b156d3b6e4c85a2be521fb989f336)
+
 ### 1. 下载插件
 - **方式一（推荐）**: 从 [Releases](https://github.com/baicaizhale/LiteMotto/releases) 页面下载最新的 `LiteMotto.jar` 文件
 - **方式二**: 自行编译源代码（需要 Maven 环境）
