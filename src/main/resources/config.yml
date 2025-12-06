@@ -21,3 +21,11 @@ update-check:
   on-startup: true
   # 管理员加入服务器时是否检查更新(需要权限 litemotto.update)
   on-admin-join: false
+
+# 消息配置
+messages: # 格言生成失败时发送给调用LiteMotto的普通玩家的消息，为了防止恐慌建议改的稍微让玩家明白是服务器原因
+  motto-generation-failed: "§bLiteMotto §7> &c尝试获取格言失败，请联系管理员解决。" 
+
+# 调试消息配置
+debug-messages: # 格言生成失败时发送给调试模式玩家的消息，在任何一次格言生成失败时都会向调试模式玩家发送此消息
+  motto-generation-failed: "§bLiteMotto §7> &c尝试获取格言失败，可能是各种原因导致，请检查控制台报错信息及时解决，如果不是配置问题请向开发者提交报错。" 

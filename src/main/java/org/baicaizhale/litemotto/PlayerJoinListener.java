@@ -59,7 +59,7 @@ public class PlayerJoinListener implements Listener {
                 player.sendMessage(colorize("&c获取格言失败，请稍后再试。"));
                 
                 // 向所有处于调试模式的玩家发送详细调试信息
-                DebugManager.sendDebugMessage("&c格言生成失败");
+                DebugManager.sendDebugMessage(LiteMotto.getInstance().getConfig().getString("debug-messages.motto-generation-failed", "&c格言生成失败"));
                 DebugManager.sendDebugMessage("&f可能原因: &e网络问题或API响应错误");
                 DebugManager.sendDebugMessage("&f请检查控制台获取更多错误信息");
                 

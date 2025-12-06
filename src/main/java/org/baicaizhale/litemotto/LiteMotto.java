@@ -77,7 +77,7 @@ public class LiteMotto extends JavaPlugin {
                             DebugManager.sendDebugMessage("&f已添加到最近格言列表，当前列表大小: &e" + 
                                 recentMottoManager.getRecentMottos().size());
                         } else {
-                            sender.sendMessage(PlayerJoinListener.colorize("&c获取格言失败，请稍后再试。"));
+                            sender.sendMessage(PlayerJoinListener.colorize(getConfig().getString("messages.motto-generation-failed", "&c获取格言失败，请稍后再试。")));
                             
                             // 输出详细调试信息到控制台
                             DebugManager.sendDebugMessage("&7========== LiteMotto Debug ==========");
@@ -88,7 +88,7 @@ public class LiteMotto extends JavaPlugin {
                             DebugManager.sendDebugMessage("&7======================================");
 
                             // 向所有处于调试模式的玩家发送详细调试信息
-                            DebugManager.sendDebugMessage("&c格言生成失败");
+                            DebugManager.sendDebugMessage(LiteMotto.getInstance().getConfig().getString("debug-messages.motto-generation-failed", "&c格言生成失败"));
                             DebugManager.sendDebugMessage("&f可能原因: &e网络问题或API响应错误");
                             DebugManager.sendDebugMessage("&f请检查控制台获取更多错误信息");
                         }
