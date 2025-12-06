@@ -1,11 +1,17 @@
 name: CI-Build & Release
 
 on:
+# 由以下事件触发：
+# - push :
+#   - 当代码推送到 main 分支时。
+#   - 当创建以 v 开头的标签时。
+# - pull_request :
+#   - 当向 main 分支提交拉取请求时。
   push:
-    branches: [ master ]
+    branches: [ main ] 
     tags: [ 'v*' ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
