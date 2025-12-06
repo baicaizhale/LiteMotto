@@ -1,5 +1,6 @@
 
-<img width="500" height="500" alt="497126858-f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" src="https://github.com/user-attachments/assets/c016d95b-4ef1-4cea-a1cc-26369c5cc99d" />
+<img width="500" height="500" alt="497126858-f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" src="https://github.com/user-attachments/assets/6cd60d44-befb-4cb3-8202-f3afdb770d34" />
+
 
 
 
@@ -327,4 +328,5 @@ LiteMotto/
 
 本插件与 Cloudflare AI 官方无直接关联，仅为个人项目。
 ![Bstats](https://bstats.org/signatures/bukkit/LiteMotto.svg)
+
 
