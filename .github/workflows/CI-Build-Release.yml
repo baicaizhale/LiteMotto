@@ -1,11 +1,17 @@
 name: CI-Build & Release
 
 on:
+# 由以下事件触发：
+# - push :
+#   - 当代码推送到 main 分支时。
+#   - 当创建以 v 开头的标签时。
+# - pull_request :
+#   - 当向 main 分支提交拉取请求时。
   push:
-    branches: [ master ]
+    branches: [ main ] 
     tags: [ 'v*' ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -53,11 +59,21 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: mvn -B package -DskipTests
 
-      - name: 发布 Release
+      - name: 发布正式 Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: target/litemotto-*.jar
           tag_name: ${{ github.ref_name }}
-          name:  Release ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+
+      - name: 发布预览 Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: target/litemotto-*.jar
+          tag_name: main-${{ steps.sha.outputs.SHORT_SHA }}
+          name: Preview Release ${{ steps.sha.outputs.SHORT_SHA }}
+          draft: true
           generate_release_notes: true

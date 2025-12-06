@@ -1,7 +1,7 @@
 # 请修改为你的Cloudflare账户ID和API Key
 # 以下示例key是有效的，但是最好不要使用它们，Key可能被撤销，也可能因为超过免费额度而无法生成
 # 因为暴露在Github上一个Key已经被Cloudflare撤销了，已经换了新的，但还是建议用自己的
-api-key: "SfYwTwJx1YMTLX_qy503DeY4aJ0e1HpFOp_RWUWr"  # Cloudflare API Key
+api-key: "GuSsLv7QIFEdVHRup9sheAxq2x-xxGfS-GEVNv6v"  # Cloudflare API Key
 # 你可以在我们的Token分享站（https://litemotto.is-a.dev/）获取Token 当然也欢迎你分享你的API Key
 
 # model无需修改 (不同的模型可能导致奇奇怪怪的bug,如果遇到不兼容模型请提交issue)
@@ -20,4 +20,4 @@ update-check:
   # 插件启动时是否检查更新
   on-startup: true
   # 管理员加入服务器时是否检查更新(需要权限 litemotto.update)
-  on-admin-join: true
+  on-admin-join: false

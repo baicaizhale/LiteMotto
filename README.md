@@ -1,6 +1,5 @@
 
-<img width="256" height="256" alt="icon" src="https://github.com/user-attachments/assets/f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" />
-
+<img width="500" height="500" alt="497126858-f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" src="https://github.com/user-attachments/assets/d623d871-b510-4471-9e76-79964b532baf" />
 
 # LiteMotto 轻语格言
 
@@ -36,6 +35,9 @@ LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器
 - ☁️ **Cloudflare集成优化**: 添加通过API Key自动获取account-id功能
 
 ## 📦 安装方法
+
+### *可以通过视频来学习安装方法：*
+[点击前往Bilibili播放【LiteMotto | 使用指南】](https://www.bilibili.com/video/BV1a2U7BRENa/?share_source=copy_web&vd_source=4d7b156d3b6e4c85a2be521fb989f336)
 
 ### 1. 下载插件
 - **方式一（推荐）**: 从 [Releases](https://github.com/baicaizhale/LiteMotto/releases) 页面下载最新的 `LiteMotto.jar` 文件
@@ -323,3 +325,6 @@ LiteMotto/
 
 本插件与 Cloudflare AI 官方无直接关联，仅为个人项目。
 ![Bstats](https://bstats.org/signatures/bukkit/LiteMotto.svg)
+
+
+
