@@ -1,5 +1,7 @@
 name: CI-Build & Release
 
+#！！！不要把LiteMotto改成litemotto
+
 on:
 # 由以下事件触发：
 # - push :
@@ -46,8 +48,8 @@ jobs:
         if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-artifact@v4
         with:
-          name: litemotto-#${{ steps.sha.outputs.SHORT_SHA }}
-          path: target/litemotto-*.jar
+          name: LiteMotto-#${{ steps.sha.outputs.SHORT_SHA }}
+          path: target/LiteMotto-*.jar
 
       - name: 设置发布版本
         if: startsWith(github.ref, 'refs/tags/v')
@@ -63,7 +65,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: target/litemotto-*.jar
+          files: target/LiteMotto-*.jar
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           generate_release_notes: true
@@ -72,7 +74,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: target/litemotto-*.jar
+          files: target/LiteMotto-*.jar
           tag_name: main-${{ steps.sha.outputs.SHORT_SHA }}
           name: Pre-Release ${{ steps.sha.outputs.SHORT_SHA }}
           draft: false
