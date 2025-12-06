@@ -90,8 +90,21 @@ public class UpdateChecker {
                 String remoteVersion = remoteVersionRaw.startsWith("v") ? 
                         remoteVersionRaw.substring(1) : remoteVersionRaw;
                 
-                if (localVersion.equals(remoteVersion)) {
-                    // 只有在手动检查时才提示已是最新版本
+                // 比较版本号
+                int versionComparison = compareVersions(localVersion, remoteVersion);
+
+                if (versionComparison < 0) { // 本地版本低于远程版本，有新版本
+                    // 继续执行下面的新版本提醒逻辑
+                } else if (versionComparison > 0) { // 本地版本高于远程版本
+                    if (isManualCheck) {
+                        if (player != null) {
+                            player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &eLiteMotto 插件版本 (&f" + localVersion + "&e) 高于最新版本 (&f" + remoteVersion + "&e)"));
+                        } else {
+                            plugin.getLogger().info("LiteMotto 插件版本 (" + localVersion + ") 高于最新版本 (" + remoteVersion + ")");
+                        }
+                    }
+                    return;
+                } else { // 版本相同
                     if (isManualCheck) {
                         if (player != null) {
                             player.sendMessage(PlayerJoinListener.colorize("&6[LiteMotto] &eLiteMotto 插件已是最新版本 (&f" + localVersion + "&e)"));
@@ -104,14 +117,11 @@ public class UpdateChecker {
                 
                 // 获取下载链接
                 String downloadUrl = null;
-                String sha256 = null;
-                
                 if (releaseInfo.has("assets") && releaseInfo.getJSONArray("assets").length() > 0) {
                     JSONObject asset = releaseInfo.getJSONArray("assets").getJSONObject(0);
                     downloadUrl = asset.getString("browser_download_url");
                     
                     if (asset.has("digest")) {
-                        sha256 = asset.getString("digest");
                     }
                 }
                 
@@ -213,4 +223,29 @@ public class UpdateChecker {
             }
         }
     }
+
+    /**
+     * 比较两个版本字符串。
+     * @param v1 版本字符串1
+     * @param v2 版本字符串2
+     * @return 如果 v1 > v2 返回正数，如果 v1 < v2 返回负数，如果 v1 = v2 返回 0
+     */
+    private int compareVersions(String v1, String v2) {
+        String[] parts1 = v1.split("\\.");
+        String[] parts2 = v2.split("\\.");
+
+        int length = Math.max(parts1.length, parts2.length);
+        for (int i = 0; i < length; i++) {
+            int p1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
+            int p2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
+            if (p1 < p2) {
+                return -1;
+            }
+            if (p1 > p2) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
 }
