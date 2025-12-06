@@ -75,5 +75,5 @@ jobs:
           files: target/litemotto-*.jar
           tag_name: main-${{ steps.sha.outputs.SHORT_SHA }}
           name: Preview Release ${{ steps.sha.outputs.SHORT_SHA }}
-          draft: true
+          draft: false
           generate_release_notes: true
