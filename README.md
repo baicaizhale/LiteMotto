@@ -14,6 +14,7 @@ LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器
 **以及对应的仓库：**
 - https://github.com/baicaizhale/doc/tree/main/docs/notes/LiteMotto
 - https://github.com/baicaizhale/LiteMotto/tree/web
+
 ## ⚠️ 已知问题
 
 ### 当前存在的问题
@@ -320,8 +321,6 @@ LiteMotto/
 - GitHub Issues: [提交问题](https://github.com/baicaizhale/LiteMotto/issues)
 - Pull Requests: [贡献代码](https://github.com/baicaizhale/LiteMotto/pulls)
 - 文档仓库: [LiteMotto 文档](https://github.com/baicaizhale/doc/tree/main/docs/notes/LiteMotto)
-
----
 
 本插件与 Cloudflare AI 官方无直接关联，仅为个人项目。
 ![Bstats](https://bstats.org/signatures/bukkit/LiteMotto.svg)
