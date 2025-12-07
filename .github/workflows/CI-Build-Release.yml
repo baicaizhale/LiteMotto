@@ -1,17 +1,27 @@
 name: CI-Build & Release
 
+#！！！不要把LiteMotto改成litemotto
+
 on:
-# 由以下事件触发：
-# - push :
-#   - 当代码推送到 main 分支时。
-#   - 当创建以 v 开头的标签时。
-# - pull_request :
-#   - 当向 main 分支提交拉取请求时。
   push:
-    branches: [ main ] 
+    branches: [ main, dev ] 
     tags: [ 'v*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: '构建类型（snapshot-快照包/release-正式包）'
+        required: true
+        default: 'snapshot'
+        type: choice
+        options:
+          - snapshot
+          - release
+      custom_version:
+        description: '自定义版本号（仅release类型生效，无需带v前缀）'
+        required: false
+        type: string
 
 jobs:
   build:
@@ -26,53 +36,102 @@ jobs:
           distribution: temurin
           cache: maven
 
+      # 生成短SHA（手动触发快照包也需要）
       - name: 生成短 SHA
-        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
+        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
         id: sha
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
-      - name: 设置快照版本
-        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
+      # 手动触发-快照包版本设置
+      - name: 手动触发-设置快照版本
+        if: github.event_name == 'workflow_dispatch' && inputs.build_type == 'snapshot'
         run: |
           mvn -B versions:set \
               -DnewVersion=#${{ steps.sha.outputs.SHORT_SHA }} \
               -DgenerateBackupPoms=false
 
-      - name: 编译测试 & 打包快照
-        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
-        run: mvn -B package
+      # 原有逻辑-快照版本设置（排除手动触发场景）
+      - name: 设置快照版本
+        if: (github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')) && github.event_name != 'workflow_dispatch'
+        run: |
+          mvn -B versions:set \
+              -DnewVersion=#${{ steps.sha.outputs.SHORT_SHA }} \
+              -DgenerateBackupPoms=false
 
-      - name: 上传快照包
-        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')
-        uses: actions/upload-artifact@v4
-        with:
-          name: litemotto-#${{ steps.sha.outputs.SHORT_SHA }}
-          path: target/litemotto-*.jar
+      # 手动触发-正式包版本设置
+      - name: 手动触发-设置发布版本
+        if: github.event_name == 'workflow_dispatch' && inputs.build_type == 'release'
+        run: |
+          VERSION=${{ inputs.custom_version || steps.sha.outputs.SHORT_SHA }}
+          mvn -B versions:set -DnewVersion="$VERSION" -DgenerateBackupPoms=false
 
+      # 原有逻辑-正式版本设置
       - name: 设置发布版本
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && github.event_name != 'workflow_dispatch'
         run: |
           VERSION=${GITHUB_REF_NAME#v}
           mvn -B versions:set -DnewVersion="$VERSION" -DgenerateBackupPoms=false
 
-      - name: 重新构建（跳过测试）
-        if: startsWith(github.ref, 'refs/tags/v')
+      # 手动触发-快照包编译打包
+      - name: 手动触发-编译测试&打包快照
+        if: github.event_name == 'workflow_dispatch' && inputs.build_type == 'snapshot'
+        run: mvn -B package
+
+      # 原有逻辑-快照包编译打包
+      - name: 编译测试 & 打包快照
+        if: (github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')) && github.event_name != 'workflow_dispatch'
+        run: mvn -B package
+
+      # 手动触发-正式包编译打包（跳过测试）
+      - name: 手动触发-重新构建（跳过测试）
+        if: github.event_name == 'workflow_dispatch' && inputs.build_type == 'release'
         run: mvn -B package -DskipTests
 
+      # 原有逻辑-正式包编译打包
+      - name: 重新构建（跳过测试）
+        if: startsWith(github.ref, 'refs/tags/v') && github.event_name != 'workflow_dispatch'
+        run: mvn -B package -DskipTests
+
+      # 手动触发-上传快照包
+      - name: 手动触发-上传快照包
+        if: github.event_name == 'workflow_dispatch' && inputs.build_type == 'snapshot'
+        uses: actions/upload-artifact@v4
+        with:
+          name: LiteMotto-manual-snapshot-#${{ steps.sha.outputs.SHORT_SHA }}
+          path: target/LiteMotto-*.jar
+
+      # 原有逻辑-上传快照包
+      - name: 上传快照包
+        if: (github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/v')) && github.event_name != 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: LiteMotto-${{ github.ref_name }}-#${{ steps.sha.outputs.SHORT_SHA }}
+          path: target/LiteMotto-*.jar
+
+      # 手动触发-上传正式包
+      - name: 手动触发-上传正式包
+        if: github.event_name == 'workflow_dispatch' && inputs.build_type == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: LiteMotto-manual-release-${{ inputs.custom_version || steps.sha.outputs.SHORT_SHA }}
+          path: target/LiteMotto-*.jar
+
+      # 原有逻辑-发布正式Release
       - name: 发布正式 Release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && github.event_name != 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
-          files: target/litemotto-*.jar
+          files: target/LiteMotto-*.jar
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           generate_release_notes: true
 
+      # 原有逻辑-发布预览Release
       - name: 发布预览 Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: target/litemotto-*.jar
+          files: target/LiteMotto-*.jar
           tag_name: main-${{ steps.sha.outputs.SHORT_SHA }}
           name: Pre-Release ${{ steps.sha.outputs.SHORT_SHA }}
           draft: false
