@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class LiteMotto extends JavaPlugin {
     private static LiteMotto instance;
@@ -19,6 +20,33 @@ public class LiteMotto extends JavaPlugin {
         recentMottoManager = new RecentMottoManager(10); // 保存最近10条
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         saveDefaultConfig();
+
+        // 检查并补充缺失的配置项
+        FileConfiguration config = getConfig();
+        boolean configChanged = false;
+
+        if (!config.isSet("api-provider")) {
+            config.set("api-provider", "cloudflare");
+            configChanged = true;
+        }
+
+        if (!config.isSet("siliconflow.api-key")) {
+            config.set("siliconflow.api-key", "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+            configChanged = true;
+        }
+        if (!config.isSet("siliconflow.model")) {
+            config.set("siliconflow.model", "deepseek-chat");
+            configChanged = true;
+        }
+        if (!config.isSet("siliconflow.api-url")) {
+            config.set("siliconflow.api-url", "https://api.siliconflow.cn/v1/chat/completions");
+            configChanged = true;
+        }
+
+        if (configChanged) {
+            saveConfig();
+            getLogger().info("LiteMotto: 配置文件已自动更新并保存。");
+        }
 
         // 注册命令和Tab补全
         this.getCommand("litemotto").setExecutor(this);

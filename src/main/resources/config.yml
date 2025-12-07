@@ -1,3 +1,7 @@
+# API 提供商选择 (可选值: cloudflare, siliconflow)
+api-provider: "cloudflare"
+
+# Cloudflare API 配置
 # 请修改为你的Cloudflare账户ID和API Key
 # 以下示例key是有效的，但是最好不要使用它们，Key可能被撤销，也可能因为超过免费额度而无法生成
 # 因为暴露在Github上一个Key已经被Cloudflare撤销了，已经换了新的，但还是建议用自己的
@@ -6,6 +10,12 @@ api-key: "GuSsLv7QIFEdVHRup9sheAxq2x-xxGfS-GEVNv6v"  # Cloudflare API Key
 
 # model无需修改 (不同的模型可能导致奇奇怪怪的bug,如果遇到不兼容模型请提交issue)
 model: "@cf/openai/gpt-oss-120b"
+
+# 硅基流动 API 配置
+siliconflow:
+  api-key: "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" # 硅基流动 API Key
+  model: "deepseek-chat" # 硅基流动使用的模型
+  api-url: "https://api.siliconflow.cn/v1/chat/completions" # 硅基流动 API 地址，通常无需修改
 
 # 发送给 AI 的提示词
 prompt: "请直接返回一句有哲理的格言，不要思考，也不要包含任何前后缀、额外的文字或解释。"
