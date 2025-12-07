@@ -21,6 +21,7 @@ public class LiteMottoAPI {
      */
     public void initMottoGenerator() {
         String apiProvider = LiteMotto.getInstance().getConfig().getString("api-provider", "cloudflare").toLowerCase();
+        Bukkit.getLogger().info("LiteMotto API: 读取到的 api-provider: " + apiProvider);
         switch (apiProvider) {
             case "cloudflare":
                 String accountId = LiteMotto.getInstance().getConfig().getString("account-id");
