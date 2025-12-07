@@ -4,8 +4,8 @@ name: CI-Build & Release
 
 on:
   push:
-    branches: [ main, dev ] 
     tags: [ 'v*' ]
+    branches: [ main, dev ]
   pull_request:
     branches: [ main, dev ]
   workflow_dispatch:
@@ -118,7 +118,7 @@ jobs:
 
       # 原有逻辑-发布正式Release
       - name: 发布正式 Release
-        if: startsWith(github.ref, 'refs/tags/v') && github.event_name != 'workflow_dispatch'
+        if: startsWith(github.ref, 'refs/tags/v') && github.base_ref == 'main'
         uses: softprops/action-gh-release@v2
         with:
           files: target/LiteMotto-*.jar
