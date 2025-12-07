@@ -1,5 +1,5 @@
 
-<img width="500" height="500" alt="497126858-f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" src="https://github.com/user-attachments/assets/d623d871-b510-4471-9e76-79964b532baf" />
+<img width="250" height="250" alt="497126858-f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" src="https://github.com/user-attachments/assets/d623d871-b510-4471-9e76-79964b532baf" />
 
 # LiteMotto 轻语格言
 
@@ -314,6 +314,20 @@ LiteMotto/
 3. **编写代码**: 编写相关代码
 4. **提交 PR**: 描述修改内容和目的
 
+#### 引起Actions的操作
+
+以下是当前工作流 (`CI-Build-Release.yml`) 的发布逻辑汇总表：
+
+##### 🚀 发布与构建逻辑总览
+
+| 触发行为 (User Action) | 触发 Ref | 关键条件 | 结果 (Result) | 版本/Artifact 名称 |
+| :--- | :--- | :--- | :--- | :--- |
+| **推送 Tag (在 Main)**<br>`git push origin v1.0.0` | `refs/tags/v*` | Commit **属于** `main` 分支 | **✅ 正式发布 (Latest Release)** | Release: `v1.0.0`<br>Artifact: (跳过快照上传) |
+| **推送 Tag (不在 Main)**<br>`git push origin v1.0.0` | `refs/tags/v*` | Commit **不属于** `main` 分支 | **❌ 仅构建 (Build Only)** | 无 Release，无 Artifact 上传 |
+| **合并/推送到 Main (带 Tag)**<br>Fast-forward 合并或合并前打 Tag | `refs/heads/main` | `HEAD` Commit **有** `v*` Tag | **✅ 正式发布 (Latest Release)** | Release: `v1.0.0`<br>Artifact: `LiteMotto-main-#SHA` (快照也会上传) |
+| **合并/推送到 Main (无 Tag)**<br>普通 PR 合并或提交 | `refs/heads/main` | `HEAD` Commit **无** `v*` Tag | **⚠️ 预览发布 (Pre-release)** | Release: `Pre-Release {SHA}`<br>Tag: `main-{SHA}` |
+| **推送到 Dev 分支**<br>`git push origin dev` | `refs/heads/dev` | - | **📦 仅快照 (Snapshot)** | Artifact: `LiteMotto-dev-#SHA` |
+| **提交 Pull Request** | `refs/pull/*/merge` | - | **📦 仅快照 (Snapshot)** | Artifact: `LiteMotto-{pr_ref}-#SHA` |
 
 ---
 
