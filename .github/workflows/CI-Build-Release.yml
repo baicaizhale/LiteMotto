@@ -103,7 +103,7 @@ jobs:
       # 生成安全的ref名称
       - name: 生成安全的ref名称
         id: safe_ref_name
-        run: echo "SAFE_REF_NAME=${{ github.ref_name | replace('/', '-') }}" >> $GITHUB_OUTPUT
+        run: echo "SAFE_REF_NAME=$(echo ${{ github.ref_name }} | sed 's|/|-|g')" >> $GITHUB_OUTPUT
 
       # 原有逻辑-上传快照包
       - name: 上传快照包
