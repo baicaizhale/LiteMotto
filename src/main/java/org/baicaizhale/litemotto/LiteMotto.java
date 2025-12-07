@@ -150,6 +150,14 @@ public class LiteMotto extends JavaPlugin {
                         return true;
                     }
                     reloadConfig();
+                    // 获取已注册的 LiteMottoAPI 实例并重新初始化其生成器
+                    LiteMottoAPI api = getServer().getServicesManager().getRegistration(LiteMottoAPI.class).getProvider();
+                    if (api != null) {
+                        api.initMottoGenerator(); // 重新初始化生成器
+                        getLogger().info("LiteMotto: API 生成器已根据新配置重新初始化。");
+                    } else {
+                        getLogger().severe("LiteMotto: 无法获取 LiteMottoAPI 实例，API 生成器未能重新初始化。");
+                    }
                     sender.sendMessage(PlayerJoinListener.colorize("&aLiteMotto 配置已重载。"));
                     DebugManager.sendDebugMessage("&a插件配置已由 &f" + sender.getName() + " &a重载。");
                     return true;

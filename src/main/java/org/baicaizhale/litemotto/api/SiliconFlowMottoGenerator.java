@@ -77,8 +77,16 @@ public class SiliconFlowMottoGenerator implements MottoGenerator {
                     JSONArray choices = jsonResponse.getJSONArray("choices");
                     if (choices.length() > 0) {
                         JSONObject firstChoice = choices.getJSONObject(0);
-                        JSONObject message = firstChoice.getJSONObject("message");
-                        return message.getString("content");
+                        JSONObject message = firstChoice.optJSONObject("message"); // 使用 optJSONObject 避免空指针
+                        if (message != null && message.has("content")) {
+                            return message.getString("content");
+                        } else {
+                            Bukkit.getLogger().severe("SiliconFlow API 响应中缺少 'message' 或 'content' 字段。");
+                            return "未能从 SiliconFlow 获取格言，请检查API响应。"; // 返回默认错误消息
+                        }
+                    } else {
+                        Bukkit.getLogger().severe("SiliconFlow API 响应中 'choices' 数组为空。");
+                        return "未能从 SiliconFlow 获取格言，请检查API响应。"; // 返回默认错误消息
                     }
                 }
             } else {

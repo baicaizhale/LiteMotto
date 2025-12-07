@@ -1,5 +1,5 @@
 
-<img width="500" height="500" alt="497126858-f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" src="https://github.com/user-attachments/assets/d623d871-b510-4471-9e76-79964b532baf" />
+<img width="250" height="250" alt="497126858-f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" src="https://github.com/user-attachments/assets/d623d871-b510-4471-9e76-79964b532baf" />
 
 # LiteMotto 轻语格言
 
