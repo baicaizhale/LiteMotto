@@ -34,6 +34,11 @@ public class LiteMottoAPI {
             case "siliconflow":
                 apiKey = LiteMotto.getInstance().getConfig().getString("siliconflow.api-key");
                 model = LiteMotto.getInstance().getConfig().getString("siliconflow.model");
+                // 自动更正错误的 SiliconFlow 模型配置
+                if ("@cf/openai/gpt-oss-120b".equals(model)) {
+                    model = "Qwen/Qwen2.5-72B-Instruct"; // 使用一个已知的 SiliconFlow 模型
+                    Bukkit.getLogger().warning("LiteMotto API: 检测到 SiliconFlow 模型配置为 Cloudflare 默认模型，已自动更正为 '" + model + "'。请检查您的 config.yml 文件。");
+                }
                 String apiUrl = LiteMotto.getInstance().getConfig().getString("siliconflow.api-url", "https://api.siliconflow.cn/v1/chat/completions");
                 this.currentGenerator = new SiliconFlowMottoGenerator(apiKey, model, apiUrl);
                 Bukkit.getLogger().info("LiteMotto API: 已选择 SiliconFlow 作为格言生成器。");
