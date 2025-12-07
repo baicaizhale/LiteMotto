@@ -14,7 +14,7 @@ model: "@cf/openai/gpt-oss-120b"
 # 硅基流动 API 配置
 siliconflow:
   api-key: "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" # 硅基流动 API Key
-  model: "deepseek-chat" # 硅基流动使用的模型
+  model: "@cf/openai/gpt-oss-120b" # 硅基流动使用的模型
   api-url: "https://api.siliconflow.cn/v1/chat/completions" # 硅基流动 API 地址，通常无需修改
 
 # 发送给 AI 的提示词
