@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class LiteMotto extends JavaPlugin {
     private static LiteMotto instance;
@@ -20,13 +21,40 @@ public class LiteMotto extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         saveDefaultConfig();
 
+        // 检查并补充缺失的配置项
+        FileConfiguration config = getConfig();
+        boolean configChanged = false;
+
+        if (!config.isSet("api-provider")) {
+            config.set("api-provider", "cloudflare");
+            configChanged = true;
+        }
+
+        if (!config.isSet("siliconflow.api-key")) {
+            config.set("siliconflow.api-key", "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+            configChanged = true;
+        }
+        if (!config.isSet("siliconflow.model")) {
+            config.set("siliconflow.model", "deepseek-chat");
+            configChanged = true;
+        }
+        if (!config.isSet("siliconflow.api-url")) {
+            config.set("siliconflow.api-url", "https://api.siliconflow.cn/v1/chat/completions");
+            configChanged = true;
+        }
+
+        if (configChanged) {
+            saveConfig();
+            getLogger().info("LiteMotto: 配置文件已自动更新并保存。");
+        }
+
         // 注册命令和Tab补全
         this.getCommand("litemotto").setExecutor(this);
         this.getCommand("litemotto").setTabCompleter(new LiteMottoTabCompleter());
 
         // 初始化 bStats
         int pluginId = 25873; 
-        Metrics metrics = new Metrics(this, pluginId);
+        new Metrics(this, pluginId);
         DebugManager.sendDebugMessage("&aLiteMotto 插件已启用！");
 
         // 启动配置文件监听器
@@ -122,6 +150,14 @@ public class LiteMotto extends JavaPlugin {
                         return true;
                     }
                     reloadConfig();
+                    // 获取已注册的 LiteMottoAPI 实例并重新初始化其生成器
+                    LiteMottoAPI api = getServer().getServicesManager().getRegistration(LiteMottoAPI.class).getProvider();
+                    if (api != null) {
+                        api.initMottoGenerator(); // 重新初始化生成器
+                        getLogger().info("LiteMotto: API 生成器已根据新配置重新初始化。");
+                    } else {
+                        getLogger().severe("LiteMotto: 无法获取 LiteMottoAPI 实例，API 生成器未能重新初始化。");
+                    }
                     sender.sendMessage(PlayerJoinListener.colorize("&aLiteMotto 配置已重载。"));
                     DebugManager.sendDebugMessage("&a插件配置已由 &f" + sender.getName() + " &a重载。");
                     return true;
