@@ -316,14 +316,18 @@ LiteMotto/
 
 #### 引起Actions的操作
 
-| 您的操作 | 分支/Tag | 是否在 Main 分支? | 结果 |
-| :--- | :--- | :--- | :--- |
-| **推送 Tag** | `v*` | 是 | **发布正式 Release** |
-| **推送 Tag** | `v*` | 否 (如在 dev) | 仅构建，不发布 |
-| **合并 PR / 推送代码** | `main` | - | **发布 Pre-release** |
-| **合并 PR / 推送代码** | `dev` | - | 仅构建，不发布 |
-| **手动触发 (Workflow Dispatch)** | 任意 | - | 仅上传 Artifact (Zip)，不发 Release |
+以下是当前工作流 (`CI-Build-Release.yml`) 的发布逻辑汇总表：
 
+##### 🚀 发布与构建逻辑总览
+
+| 触发行为 (User Action) | 触发 Ref | 关键条件 | 结果 (Result) | 版本/Artifact 名称 |
+| :--- | :--- | :--- | :--- | :--- |
+| **推送 Tag (在 Main)**<br>`git push origin v1.0.0` | `refs/tags/v*` | Commit **属于** `main` 分支 | **✅ 正式发布 (Latest Release)** | Release: `v1.0.0`<br>Artifact: (跳过快照上传) |
+| **推送 Tag (不在 Main)**<br>`git push origin v1.0.0` | `refs/tags/v*` | Commit **不属于** `main` 分支 | **❌ 仅构建 (Build Only)** | 无 Release，无 Artifact 上传 |
+| **合并/推送到 Main (带 Tag)**<br>Fast-forward 合并或合并前打 Tag | `refs/heads/main` | `HEAD` Commit **有** `v*` Tag | **✅ 正式发布 (Latest Release)** | Release: `v1.0.0`<br>Artifact: `LiteMotto-main-#SHA` (快照也会上传) |
+| **合并/推送到 Main (无 Tag)**<br>普通 PR 合并或提交 | `refs/heads/main` | `HEAD` Commit **无** `v*` Tag | **⚠️ 预览发布 (Pre-release)** | Release: `Pre-Release {SHA}`<br>Tag: `main-{SHA}` |
+| **推送到 Dev 分支**<br>`git push origin dev` | `refs/heads/dev` | - | **📦 仅快照 (Snapshot)** | Artifact: `LiteMotto-dev-#SHA` |
+| **提交 Pull Request** | `refs/pull/*/merge` | - | **📦 仅快照 (Snapshot)** | Artifact: `LiteMotto-{pr_ref}-#SHA` |
 
 ---
 
