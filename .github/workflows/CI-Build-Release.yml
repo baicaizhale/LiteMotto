@@ -30,6 +30,23 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 检查 Tag 是否属于 main 分支
+      - name: Check if commit is on main
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: check_branch
+        run: |
+          git fetch origin main
+          if git branch -r --contains ${{ github.sha }} | grep -q 'origin/main'; then
+            echo "IS_MAIN=true" >> $GITHUB_OUTPUT
+            echo "Commit is on main branch."
+          else
+            echo "IS_MAIN=false" >> $GITHUB_OUTPUT
+            echo "Commit is NOT on main branch. Skipping release."
+          fi
+
       - uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -123,7 +140,7 @@ jobs:
 
       # 原有逻辑-发布正式Release
       - name: 发布正式 Release
-        if: startsWith(github.ref, 'refs/tags/v') && github.base_ref == 'main'
+        if: startsWith(github.ref, 'refs/tags/v') && steps.check_branch.outputs.IS_MAIN == 'true'
         uses: softprops/action-gh-release@v2
         with:
           files: target/LiteMotto-*.jar
