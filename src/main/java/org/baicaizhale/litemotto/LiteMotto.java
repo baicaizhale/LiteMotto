@@ -54,7 +54,7 @@ public class LiteMotto extends JavaPlugin {
 
         // 初始化 bStats
         int pluginId = 25873; 
-        Metrics metrics = new Metrics(this, pluginId);
+        new Metrics(this, pluginId);
         DebugManager.sendDebugMessage("&aLiteMotto 插件已启用！");
 
         // 启动配置文件监听器

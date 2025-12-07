@@ -1,9 +1,8 @@
 package org.baicaizhale.litemotto.api;
 
-import org.baicaizhale.litemotto.LiteMotto;
-import org.bukkit.Bukkit;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
