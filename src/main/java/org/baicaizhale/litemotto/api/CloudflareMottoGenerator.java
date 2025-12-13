@@ -2,7 +2,6 @@ package org.baicaizhale.litemotto.api;
 
 import org.baicaizhale.litemotto.LiteMotto;
 import org.baicaizhale.litemotto.PlayerJoinListener;
-import org.baicaizhale.litemotto.api.MottoGenerator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

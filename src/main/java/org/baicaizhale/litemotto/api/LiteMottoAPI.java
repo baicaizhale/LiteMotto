@@ -2,7 +2,6 @@ package org.baicaizhale.litemotto.api;
 
 import org.baicaizhale.litemotto.LiteMotto;
 import org.bukkit.Bukkit;
-import org.baicaizhale.litemotto.api.MottoGenerator;
 
 /**
  * LiteMotto插件API接口
