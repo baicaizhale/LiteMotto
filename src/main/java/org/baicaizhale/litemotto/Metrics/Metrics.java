@@ -38,6 +38,7 @@ public class Metrics {
 
     private final MetricsBase metricsBase;
 
+    @SuppressWarnings("deprecation")
     public Metrics(Plugin plugin, int serviceId) {
         this.plugin = plugin;
         // Get the config file
