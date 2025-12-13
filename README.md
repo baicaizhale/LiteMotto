@@ -8,7 +8,7 @@ LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器
 ---
 
 **您大可在以下位置更细致的了解本插件：**
-- [LiteMotto文档库](https://baicaizhale.icu/notes/LiteMotto/) 
+- [LiteMotto文档库](https://baicaizhale.icu/notes/LiteMotto/)
 - [由AI生成的LiteMotto简介](https://litemotto.baicaizhale.icu/)
 
 **以及对应的仓库：**
