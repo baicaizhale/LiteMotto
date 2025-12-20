@@ -32,37 +32,13 @@ public class PlayerJoinListener implements Listener {
                 player.sendMessage(colorize(prefix + motto));
                 LiteMotto.getRecentMottoManager().addMotto(motto); // 保存格言
                 
-                // 向所有处于调试模式的玩家发送详细调试信息
-                DebugManager.sendDebugMessage("&a格言生成成功");
-                DebugManager.sendDebugMessage("&f内容: &e" + motto);
-                DebugManager.sendDebugMessage("&f长度: &e" + motto.length() + " &f字符");
-                DebugManager.sendDebugMessage("&f已添加到最近格言列表，当前列表大小: &e" + LiteMotto.getRecentMottoManager().getRecentMottos().size());
-                
-                // 输出详细调试信息到控制台
-                DebugManager.sendDebugMessage("&7========== LiteMotto 调试信息 ==========");
-                DebugManager.sendDebugMessage("&7玩家 &f" + player.getName() + " &7加入服务器");
-                DebugManager.sendDebugMessage("&7UUID: &f" + player.getUniqueId());
-                DebugManager.sendDebugMessage("&a格言生成成功: &f" + motto);
-                DebugManager.sendDebugMessage("&7格言长度: &f" + motto.length() + " &7字符");
-                DebugManager.sendDebugMessage("&7最近格言列表大小: &f" + LiteMotto.getRecentMottoManager().getRecentMottos().size());
-                DebugManager.sendDebugMessage("&7格言生成时间: &f" + new java.util.Date());
-                DebugManager.sendDebugMessage("&7======================================");
+                // 发送详细调试信息
+                DebugManager.sendPlayerJoinDebug(player, motto, true);
             } else {
                 player.sendMessage(colorize("&c获取格言失败，请稍后再试。"));
                 
-                // 向所有处于调试模式的玩家发送详细调试信息
-                DebugManager.sendDebugMessage(LiteMotto.getInstance().getConfig().getString("debug-messages.motto-generation-failed", "&c格言生成失败"));
-                DebugManager.sendDebugMessage("&f可能原因: &e网络问题或API响应错误");
-                DebugManager.sendDebugMessage("&f请检查控制台获取更多错误信息");
-                
-                // 输出详细调试信息到控制台
-                DebugManager.sendDebugMessage("&7=========== LiteMotto Debug ==========");
-                DebugManager.sendDebugMessage("&7玩家 &f" + player.getName() + " &7加入服务器");
-                DebugManager.sendDebugMessage("&7UUID: &f" + player.getUniqueId());
-                DebugManager.sendDebugMessage("&c格言生成状态: 失败");
-                DebugManager.sendDebugMessage("&7可能原因: &e网络问题或API响应错误");
-                DebugManager.sendDebugMessage("&7尝试时间: &f" + new java.util.Date());
-                DebugManager.sendDebugMessage("&7======================================");
+                // 发送详细调试信息
+                DebugManager.sendPlayerJoinDebug(player, null, false);
             }
         });
     }

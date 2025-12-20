@@ -57,14 +57,68 @@ public class DebugManager {
      */
     public static void sendDebugMessage(String message) {
         // 向控制台输出调试信息，移除Minecraft颜色代码
-        String formattedConsoleMessage = PlayerJoinListener.colorize("&7[LiteMotto Debug] &f" + message);
+        String formattedConsoleMessage = PlayerJoinListener.colorize("&7Debug &f" + message);
         LiteMotto.getInstance().getLogger().info(PlayerJoinListener.toAnsiColor(formattedConsoleMessage));
 
         for (UUID playerId : debugPlayers) {
             Player player = LiteMotto.getInstance().getServer().getPlayer(playerId);
             if (player != null && player.isOnline()) {
-                player.sendMessage(PlayerJoinListener.colorize("&7[LiteMotto Debug] &f" + message));
+                player.sendMessage(PlayerJoinListener.colorize("&7Debug &f" + message));
             }
+        }
+    }
+
+    /**
+     * 发送格言生成调试信息
+     * @param sender 执行命令的发送者
+     * @param motto 生成的格言 (如果成功)
+     * @param success 是否生成成功
+     */
+    public static void sendGenerationDebug(org.bukkit.command.CommandSender sender, String motto, boolean success) {
+        if (success) {
+            // sendDebugMessage("&7========== LiteMotto 调试信息 ==========");
+            sendDebugMessage("&a格言生成成功");
+            sendDebugMessage("&f命令执行者: &e" + sender.getName());
+            sendDebugMessage("&f内容: &e" + motto);
+            sendDebugMessage("&f长度: &e" + motto.length() + " &f字符");
+            sendDebugMessage("&f最近格言列表大小: &e" + LiteMotto.getRecentMottoManager().getRecentMottos().size());
+            sendDebugMessage("&f格言生成时间: &f" + new java.util.Date());
+            // sendDebugMessage("&7======================================");
+        } else {
+            sendDebugMessage("&7========== LiteMotto Report ==========");
+            sendDebugMessage("&c格言生成状态: 失败");
+            sendDebugMessage("&f命令执行者: &e" + sender.getName());
+            sendDebugMessage("&f可能原因: &e网络问题或API响应错误");
+            sendDebugMessage("&f尝试时间: &e" + new java.util.Date());
+            sendDebugMessage("&7======================================");
+        }
+    }
+
+    /**
+     * 发送玩家加入时的格言生成调试信息
+     * @param player 加入的玩家
+     * @param motto 生成的格言 (如果成功)
+     * @param success 是否生成成功
+     */
+    public static void sendPlayerJoinDebug(Player player, String motto, boolean success) {
+        if (success) {
+            // sendDebugMessage("&7========== LiteMotto 调试信息 ==========");
+            sendDebugMessage("&7玩家 &f" + player.getName() + " &7加入服务器");
+            sendDebugMessage("&7UUID: &f" + player.getUniqueId());
+            sendDebugMessage("&a格言生成成功: &f" + motto);
+            sendDebugMessage("&f内容: &e" + motto);
+            sendDebugMessage("&7格言长度: &f" + motto.length() + " &7字符");
+            sendDebugMessage("&7最近格言列表大小: &f" + LiteMotto.getRecentMottoManager().getRecentMottos().size());
+            sendDebugMessage("&7格言生成时间: &f" + new java.util.Date());
+            // sendDebugMessage("&7======================================");
+        } else {
+            sendDebugMessage("&7=========== LiteMotto Report ==========");
+            sendDebugMessage("&7玩家 &f" + player.getName() + " &7加入服务器");
+            sendDebugMessage("&7UUID: &f" + player.getUniqueId());
+            sendDebugMessage("&c格言生成状态: 失败");
+            sendDebugMessage("&7可能原因: &e网络问题或API响应错误");
+            sendDebugMessage("&7尝试时间: &f" + new java.util.Date());
+            sendDebugMessage("&7======================================");
         }
     }
 }
