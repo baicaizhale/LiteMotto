@@ -26,12 +26,13 @@ public class ConfigWatcher implements Runnable {
             this.configPath.getParent().register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
             DebugManager.sendDebugMessage("&7已开始监听配置文件: &f" + configPath.toString());
         } catch (IOException e) {
-            plugin.getLogger().severe("[LiteMotto Debug] 无法初始化配置文件监听器: " + e.getMessage());
+            plugin.getLogger().severe("&7无法初始化配置文件监听器: " + e.getMessage());
         }
     }
 
     @Override
     public void run() {
+        if (watcher == null) return;
         while (running) {
             WatchKey key;
             try {
@@ -39,9 +40,13 @@ public class ConfigWatcher implements Runnable {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
+            } catch (ClosedWatchServiceException e) {
+                // 如果 WatchService 被关闭，优雅地退出循环
+                running = false;
+                break;
             }
 
-            if (key != null) {
+            if (key != null && running) {
                 for (WatchEvent<?> event : key.pollEvents()) {
                     WatchEvent.Kind<?> kind = event.kind();
 
@@ -67,11 +72,13 @@ public class ConfigWatcher implements Runnable {
 
     public void stopWatching() {
         this.running = false;
-        try {
-            watcher.close();
-            DebugManager.sendDebugMessage("&7配置文件监听器已停止。");
-        } catch (IOException e) {
-            plugin.getLogger().severe("[LiteMotto Debug] 关闭配置文件监听器失败: " + e.getMessage());
+        if (watcher != null) {
+            try {
+                watcher.close();
+                DebugManager.sendDebugMessage("&7配置文件监听器已停止。");
+            } catch (IOException e) {
+                plugin.getLogger().severe("&7关闭配置文件监听器失败: " + e.getMessage());
+            }
         }
     }
 }
