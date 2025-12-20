@@ -1,6 +1,5 @@
 package org.baicaizhale.litemotto.api;
 
-import org.baicaizhale.litemotto.LiteMotto;
 import org.baicaizhale.litemotto.PlayerJoinListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -49,15 +48,11 @@ public class CloudflareMottoGenerator implements MottoGenerator {
                 org.baicaizhale.litemotto.DebugManager.sendDebugMessage("&a成功获取到 account-id: &f" + resolvedAccountId);
             }
 
-            // 拼接最近格言，提示AI不要重复
-            StringBuilder avoidBuilder = new StringBuilder();
-            for (String recent : LiteMotto.getRecentMottoManager().getRecentMottos()) {
-                avoidBuilder.append("「").append(recent).append("」, ");
-            }
-            String avoidText = avoidBuilder.length() > 0
-                    ? "请不要生成以下内容：" + avoidBuilder.toString() + "。"
-                    : "";
-            String finalPrompt = prompt + (avoidText.isEmpty() ? "" : "\n" + avoidText);
+            // 发送调试信息
+            org.baicaizhale.litemotto.DebugManager.sendDebugMessage("&7正在请求格言...");
+            org.baicaizhale.litemotto.DebugManager.sendDebugMessage("&f提供商: &e" + getProviderName());
+            org.baicaizhale.litemotto.DebugManager.sendDebugMessage("&f模型: &e" + getModelName());
+            org.baicaizhale.litemotto.DebugManager.sendDebugMessage("&f提示词: &7" + prompt);
 
             boolean isGptOss120b = model != null && model.toLowerCase().contains("gpt-oss-120b");
             String apiUrl;
@@ -65,13 +60,13 @@ public class CloudflareMottoGenerator implements MottoGenerator {
             if (isGptOss120b) {
                 // gpt-oss-120b 走 run 接口，input 格式
                 apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + resolvedAccountId + "/ai/run/@cf/openai/gpt-oss-120b";
-                requestBody.put("input", finalPrompt);
+                requestBody.put("input", prompt);
             } else {
                 // 其它模型走 chat/completions
                 apiUrl = "https://api.cloudflare.com/client/v4/accounts/" + resolvedAccountId + "/ai/v1/chat/completions";
                 requestBody.put("model", model);
                 requestBody.put("messages", new JSONArray().put(
-                        new JSONObject().put("role", "user").put("content", finalPrompt)
+                        new JSONObject().put("role", "user").put("content", prompt)
                 ));
             }
 
@@ -146,6 +141,24 @@ public class CloudflareMottoGenerator implements MottoGenerator {
             org.bukkit.Bukkit.getLogger().severe("LiteMotto API 获取格言失败: " + e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * 获取使用的模型名称
+     * @return 模型名称
+     */
+    @Override
+    public String getModelName() {
+        return this.model;
+    }
+
+    /**
+     * 获取模型提供商名称
+     * @return 提供商名称
+     */
+    @Override
+    public String getProviderName() {
+        return "Cloudflare";
     }
 
     /**

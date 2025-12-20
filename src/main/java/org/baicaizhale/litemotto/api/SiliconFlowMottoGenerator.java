@@ -40,6 +40,12 @@ public class SiliconFlowMottoGenerator implements MottoGenerator {
     @Override
     public String fetchMotto(String prompt) {
         try {
+            // 发送调试信息
+            org.baicaizhale.litemotto.DebugManager.sendDebugMessage("&7正在请求格言...");
+            org.baicaizhale.litemotto.DebugManager.sendDebugMessage("&f提供商: &e" + getProviderName());
+            org.baicaizhale.litemotto.DebugManager.sendDebugMessage("&f模型: &e" + getModelName());
+            org.baicaizhale.litemotto.DebugManager.sendDebugMessage("&f提示词: &7" + prompt);
+
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -104,5 +110,23 @@ public class SiliconFlowMottoGenerator implements MottoGenerator {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 获取使用的模型名称
+     * @return 模型名称
+     */
+    @Override
+    public String getModelName() {
+        return this.model;
+    }
+
+    /**
+     * 获取模型提供商名称
+     * @return 提供商名称
+     */
+    @Override
+    public String getProviderName() {
+        return "SiliconFlow";
     }
 }
