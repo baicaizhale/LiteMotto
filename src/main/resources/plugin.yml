@@ -7,6 +7,7 @@ author: baicaizhale & zip8919
 
 commands:
   litemotto:
+    aliases: [lm]
     description: LiteMotto 插件命令
     usage: |
       /litemotto gen - 生成一条格言并发送给执行者
