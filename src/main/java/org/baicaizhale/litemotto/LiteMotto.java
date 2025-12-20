@@ -89,36 +89,13 @@ public class LiteMotto extends JavaPlugin {
                             sender.sendMessage(PlayerJoinListener.colorize(prefix + motto));
                             recentMottoManager.addMotto(motto); // 保存格言
                             
-                            // 输出详细调试信息到控制台
-                            DebugManager.sendDebugMessage("&7========== LiteMotto 调试信息 ==========");
-                            DebugManager.sendDebugMessage("&f命令执行者: &e" + sender.getName());
-                            DebugManager.sendDebugMessage("&a格言生成成功: &f" + motto);
-                            DebugManager.sendDebugMessage("&f格言长度: &f" + motto.length() + " &f字符");
-                            DebugManager.sendDebugMessage("&f最近格言列表大小: &f" + recentMottoManager.getRecentMottos().size());
-                            DebugManager.sendDebugMessage("&f格言生成时间: &f" + new java.util.Date());
-                            DebugManager.sendDebugMessage("&7======================================");
-
-                            // 向所有处于调试模式的玩家发送详细调试信息
-                            DebugManager.sendDebugMessage("&a格言生成成功");
-                            DebugManager.sendDebugMessage("&f内容: &e" + motto);
-                            DebugManager.sendDebugMessage("&f长度: &e" + motto.length() + " &f字符");
-                            DebugManager.sendDebugMessage("&f已添加到最近格言列表，当前列表大小: &e" + 
-                                recentMottoManager.getRecentMottos().size());
+                            // 发送详细调试信息
+                            DebugManager.sendGenerationDebug(sender, motto, true);
                         } else {
                             sender.sendMessage(PlayerJoinListener.colorize(getConfig().getString("messages.motto-generation-failed", "&c获取格言失败，请稍后再试。")));
                             
-                            // 输出详细调试信息到控制台
-                            DebugManager.sendDebugMessage("&7========== LiteMotto Debug ==========");
-                            DebugManager.sendDebugMessage("&f命令执行者: &e" + sender.getName());
-                            DebugManager.sendDebugMessage("&c格言生成状态: 失败");
-                            DebugManager.sendDebugMessage("&f可能原因: &e网络问题或API响应错误");
-                            DebugManager.sendDebugMessage("&f尝试时间: &e" + new java.util.Date());
-                            DebugManager.sendDebugMessage("&7======================================");
-
-                            // 向所有处于调试模式的玩家发送详细调试信息
-                            DebugManager.sendDebugMessage(LiteMotto.getInstance().getConfig().getString("debug-messages.motto-generation-failed", "&c格言生成失败"));
-                            DebugManager.sendDebugMessage("&f可能原因: &e网络问题或API响应错误");
-                            DebugManager.sendDebugMessage("&f请检查控制台获取更多错误信息");
+                            // 发送详细调试信息
+                            DebugManager.sendGenerationDebug(sender, null, false);
                         }
                     });
                     return true;
