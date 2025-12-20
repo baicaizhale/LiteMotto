@@ -90,16 +90,10 @@ public class LiteMotto extends JavaPlugin {
                             recentMottoManager.addMotto(motto); // 保存格言
                             
                             // 输出详细调试信息到控制台
-                            DebugManager.sendDebugMessage("&7========== LiteMotto 调试信息 ==========");
-                            DebugManager.sendDebugMessage("&f命令执行者: &e" + sender.getName());
-                            DebugManager.sendDebugMessage("&a格言生成成功: &f" + motto);
-                            DebugManager.sendDebugMessage("&f格言长度: &f" + motto.length() + " &f字符");
-                            DebugManager.sendDebugMessage("&f最近格言列表大小: &f" + recentMottoManager.getRecentMottos().size());
-                            DebugManager.sendDebugMessage("&f格言生成时间: &f" + new java.util.Date());
-                            DebugManager.sendDebugMessage("&7======================================");
-
-                            // 向所有处于调试模式的玩家发送详细调试信息
                             DebugManager.sendDebugMessage("&a格言生成成功");
+                            DebugManager.sendDebugMessage("&f命令执行者: &e" + sender.getName());
+                            // DebugManager.sendDebugMessage("&f最近格言列表大小: &f" + recentMottoManager.getRecentMottos().size());
+                            DebugManager.sendDebugMessage("&f格言生成时间: &f" + new java.util.Date());
                             DebugManager.sendDebugMessage("&f内容: &e" + motto);
                             DebugManager.sendDebugMessage("&f长度: &e" + motto.length() + " &f字符");
                             DebugManager.sendDebugMessage("&f已添加到最近格言列表，当前列表大小: &e" + 
