@@ -13,7 +13,7 @@ public class ConfigWatcher implements Runnable {
     private final LiteMotto plugin;
     private final Path configPath;
     private WatchService watcher;
-    private boolean running = true;
+    private volatile boolean running = true;
     private long lastReloadTime = 0;
     private static final long RELOAD_DEBOUNCE_MILLIS = 1000; // 1秒防抖时间
 
@@ -33,40 +33,49 @@ public class ConfigWatcher implements Runnable {
     @Override
     public void run() {
         if (watcher == null) return;
-        while (running) {
-            WatchKey key;
-            try {
-                key = watcher.poll(1, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
-            } catch (ClosedWatchServiceException e) {
-                // 如果 WatchService 被关闭，优雅地退出循环
-                running = false;
-                break;
-            }
+        try {
+            while (running) {
+                WatchKey key;
+                try {
+                    key = watcher.poll(1, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
 
-            if (key != null && running) {
-                for (WatchEvent<?> event : key.pollEvents()) {
-                    WatchEvent.Kind<?> kind = event.kind();
+                if (key != null && running) {
+                    for (WatchEvent<?> event : key.pollEvents()) {
+                        if (!running) break;
+                        WatchEvent.Kind<?> kind = event.kind();
 
-                    // 确保是文件修改事件且是目标文件
-                    if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
-                        Path changedFile = (Path) event.context();
-                        if (configPath.getFileName().equals(changedFile)) {
-                            long currentTime = System.currentTimeMillis();
-                            if (currentTime - lastReloadTime > RELOAD_DEBOUNCE_MILLIS) {
-                                lastReloadTime = currentTime;
-                                Bukkit.getScheduler().runTask(plugin, () -> {
-                                    plugin.reloadConfig();
-                                    DebugManager.sendDebugMessage(ChatColor.YELLOW + "配置文件已自动重载。");
-                                });
+                        // 确保是文件修改事件且是目标文件
+                        if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+                            Path changedFile = (Path) event.context();
+                            if (configPath.getFileName().equals(changedFile)) {
+                                long currentTime = System.currentTimeMillis();
+                                if (currentTime - lastReloadTime > RELOAD_DEBOUNCE_MILLIS) {
+                                    lastReloadTime = currentTime;
+                                    Bukkit.getScheduler().runTask(plugin, () -> {
+                                        plugin.reloadConfig();
+                                        DebugManager.sendDebugMessage(ChatColor.YELLOW + "配置文件已自动重载。");
+                                    });
+                                }
                             }
                         }
                     }
+                    if (running) {
+                        key.reset();
+                    }
                 }
-                key.reset();
             }
+        } catch (ClosedWatchServiceException e) {
+            // WatchService 被关闭，正常退出
+        } catch (Exception e) {
+            if (running) {
+                plugin.getLogger().warning("&7配置文件监听器发生异常: " + e.getMessage());
+            }
+        } finally {
+            running = false;
         }
     }
 

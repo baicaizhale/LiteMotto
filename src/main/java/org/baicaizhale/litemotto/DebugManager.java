@@ -57,13 +57,13 @@ public class DebugManager {
      */
     public static void sendDebugMessage(String message) {
         // 向控制台输出调试信息，移除Minecraft颜色代码
-        String formattedConsoleMessage = PlayerJoinListener.colorize("&7Debug &f" + message);
+        String formattedConsoleMessage = PlayerJoinListener.colorize("&7Debug &f>> " + message);
         LiteMotto.getInstance().getLogger().info(PlayerJoinListener.toAnsiColor(formattedConsoleMessage));
 
         for (UUID playerId : debugPlayers) {
             Player player = LiteMotto.getInstance().getServer().getPlayer(playerId);
             if (player != null && player.isOnline()) {
-                player.sendMessage(PlayerJoinListener.colorize("&7Debug &f" + message));
+                player.sendMessage(PlayerJoinListener.colorize("&7Debug &f>> " + message));
             }
         }
     }
