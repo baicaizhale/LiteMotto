@@ -56,7 +56,7 @@ public class ConfigWatcher implements Runnable {
                                 if (currentTime - lastReloadTime > RELOAD_DEBOUNCE_MILLIS) {
                                     lastReloadTime = currentTime;
                                     Bukkit.getScheduler().runTask(plugin, () -> {
-                                        plugin.reloadConfig();
+                                        plugin.performReload();
                                         DebugManager.sendDebugMessage(ChatColor.YELLOW + "配置文件已自动重载。");
                                     });
                                 }

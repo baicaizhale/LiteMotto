@@ -28,12 +28,13 @@ LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器
 
 ## ✨ 功能特点
 
-- 🎭 **AI 生成每日格言**（使用 Cloudflare AI，支持多种模型，包括 @cf/openai/gpt-oss-120b 和 @cf/meta/llama-3-8b-instruct）  
-- 🎨 **支持 & 颜色代码**（自动转换为 Minecraft 颜色格式）  
-- ⚙ **可配置前缀 & 提示词**，自由定制消息风格  
-- 🚀 **异步获取数据**，不会影响服务器性能  
-- 🔄 **自动兼容 Cloudflare 多种模型返回格式**，无需手动切换
-- ☁️ **Cloudflare集成优化**: 添加通过API Key自动获取account-id功能
+- 🎭 **多 AI 平台支持**：支持 **Cloudflare AI** 和 **SiliconFlow (硅基流动)**，提供多种高性能大模型。
+- 🎨 **颜色代码支持**：完美支持 `&` 和 `§` 颜色代码，自动转换为 Minecraft 格式。
+- ⚙ **高度可定制**：自由配置前缀、提示词、模型选择及消息反馈。
+- 🚀 **异步非阻塞**：格言获取过程全程异步，确保不影响服务器主线程性能。
+- 🔄 **实时热重载**：配置文件修改后自动重载，无需重启服务器或执行命令。
+- 🛠 **配置自动迁移**：版本更新时自动保留旧配置并迁移至新格式。
+- ☁️ **智能适配**：自动兼容不同模型的 API 返回格式。
 
 ## 📦 安装方法
 
@@ -61,39 +62,56 @@ LiteMotto 是一个 **Minecraft Spigot 插件**，可以在玩家加入服务器
 打开 `plugins/LiteMotto/config.yml` 文件，根据您的需求进行配置：
 
 ```yaml
-# Cloudflare AI 配置（可选，带有默认配置，不配置也能使用基础功能）
-# 如果提供了api-key，account-id可以自动获取
-account-id: "你的 Cloudflare 账户 ID"
+# 配置文件版本 (请勿修改)
+version: "x.x.x"
+
+# API 提供商选择 (可选值: cloudflare, siliconflow)
+api-provider: "cloudflare"
+
+# Cloudflare API 配置
 api-key: "你的 Cloudflare API Key"
 model: "@cf/openai/gpt-oss-120b"
-prompt: "请直接返回一句有哲理的格言，不要思考，也不要包含任何前后缀、标点、额外的文字或解释。"
+
+# 硅基流动 API 配置
+siliconflow:
+  api-key: "你的 SiliconFlow API Key"
+  model: "Qwen/Qwen2.5-72B-Instruct"
+  api-url: "https://api.siliconflow.cn/v1/chat/completions"
+
+# 发送给 AI 的提示词
+prompt: "请直接返回一句有哲理的格言，不要思考，也不要包含任何前后缀、额外的文字或解释。"
+
+# 玩家收到消息的前缀
 prefix: "§bLiteMotto §7> §f"
+
+# 更新检查设置
+update-check:
+  enabled: true
+  on-startup: false
+  on-admin-join: false
 ```
 
 ### 配置项详细说明
 
-#### Cloudflare AI 配置（可选）
-- **account-id**: 您的 Cloudflare 账户 ID
-  - 获取方式：登录 Cloudflare 控制台 → 右上角账户头像 → 复制账户 ID
-  - **注意**: 如果提供了 `api-key`，插件将尝试自动获取 `account-id`，此项可留空。
-- **api-key**: Cloudflare API 密钥
-  - 获取方式：Cloudflare 控制台 → 左侧菜单 "AI" → "管理 API 令牌" → 创建 API 令牌
-  - **注意**: 提供此项后，插件将尝试自动获取 `account-id`。
-- **model**: AI 模型选择
-  - **推荐**: `@cf/openai/gpt-oss-120b`（效果最佳）
-  - **备选**: `@cf/meta/llama-3-8b-instruct`（响应更快）
-  - **特性**: 插件会自动适配不同模型的 API 返回格式
+#### 核心配置
+- **api-provider**: 选择使用的 AI 平台 (`cloudflare` 或 `siliconflow`)。
+- **prompt**: 发送给 AI 的指令，用于控制格言的风格和内容。
+- **prefix**: 消息前缀，支持 `&` 和 `§` 颜色代码。
 
-#### 格言生成配置
-- **prompt**: AI 提示词
-  - **默认值**: 简洁的哲理格言生成提示
-  - **自定义示例**: 
-    - `"请用文言文风格生成一句格言"`
-    - `"请生成一句鼓励学习的格言"`
-    - `"请用幽默的方式说一句人生感悟"`
-- **prefix**: 消息前缀
-  - **支持格式**: `&` 颜色代码和 `§` Minecraft 颜色代码
-  - **自动转换**: 插件会自动将 `&` 转换为 `§`
+#### Cloudflare AI 配置
+- **api-key**: 您的 Cloudflare API 令牌。
+- **model**: 使用的模型名称，默认为 `@cf/openai/gpt-oss-120b`。
+- **注意**: 插件会自动获取关联的 `account-id`，无需手动配置。
+
+#### SiliconFlow (硅基流动) 配置
+- **api-key**: 您的 SiliconFlow API Key。
+- **model**: 使用的模型名称，推荐 `Qwen/Qwen2.5-72B-Instruct`。
+- **api-url**: API 请求地址，通常保持默认即可。
+
+#### 更新检查设置
+- **enabled**: 是否启用更新检查功能。
+- **on-startup**: 插件启动时是否在控制台提醒更新。
+- **on-admin-join**: 拥有权限的管理员加入时是否发送更新提醒。
   - **颜色代码参考**:
     - `&0`/`§0` - 黑色
     - `&1`/`§1` - 深蓝色
@@ -249,11 +267,12 @@ if (api.isAvailable()) {
 
 ### API 特性
 
-- **自动配置**: API 会自动读取 LiteMotto 的配置文件（account-id、api-key、model 等）
-- **重复避免**: 自动避免生成最近 10 条已生成的格言
-- **模型适配**: 自动适配 Cloudflare 不同模型的 API 返回格式
-- **颜色代码**: 返回的格言已自动处理 Minecraft 颜色代码
-- **异常处理**: 提供完整的异常处理机制
+- **多平台支持**: 自动根据配置切换 Cloudflare 或 SiliconFlow。
+- **自动配置**: API 会自动读取插件配置文件，无需手动传入凭据。
+- **重复避免**: 自动过滤最近生成的格言，确保内容新鲜度。
+- **智能适配**: 自动处理不同 AI 模型的返回格式差异。
+- **元数据获取**: 支持获取当前使用的模型名称和提供商信息。
+- **颜色处理**: 返回的格言已自动处理颜色代码，可直接发送给玩家。
 
 ### 注意事项
 
@@ -270,18 +289,23 @@ LiteMotto/
 ├── src/main/java/
 │   ├── org/baicaizhale/litemotto/
 │   │   ├── LiteMotto.java          # 插件主类
+│   │   ├── ConfigUpdater.java      # 配置自动迁移
+│   │   ├── ConfigWatcher.java      # 配置实时重载
+│   │   ├── DebugManager.java       # 调试信息管理
 │   │   ├── api/
-│   │   │   └── LiteMottoAPI.java   # API 接口类
+│   │   │   ├── LiteMottoAPI.java   # API 统一入口
+│   │   │   ├── MottoGenerator.java # 生成器接口
+│   │   │   ├── CloudflareMottoGenerator.java  # Cloudflare 实现
+│   │   │   └── SiliconFlowMottoGenerator.java # 硅基流动实现
 │   │   ├── managers/
-│   │   │   ├── ConfigManager.java  # 配置管理
-│   │   │   └── RecentMottoManager.java # 历史格言管理
+│   │   │   └── RecentMottoManager.java # 历史记录管理
 │   │   └── utils/
-│   │       └── ColorUtils.java     # 颜色工具类
+│   │       └── ColorUtils.java     # 颜色处理工具
 │   └── listeners/
-│       └── PlayerJoinListener.java # 玩家加入监听器
+│       └── PlayerJoinListener.java # 玩家加入监听
 ├── src/main/resources/
-│   ├── plugin.yml                   # 插件描述文件
-│   └── config.yml                   # 默认配置文件
+│   ├── plugin.yml                   # 插件描述
+│   └── config.yml                   # 默认配置
 └── pom.xml                         # Maven 构建配置
 ```
 

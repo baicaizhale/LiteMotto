@@ -6,8 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import java.io.File;
 
 public class LiteMotto extends JavaPlugin {
@@ -15,6 +13,7 @@ public class LiteMotto extends JavaPlugin {
     private static RecentMottoManager recentMottoManager;
     private ConfigWatcher configWatcher;
     private UpdateChecker updateChecker;
+    private LiteMottoAPI liteMottoAPI;
 
     @Override
     public void onEnable() {
@@ -46,7 +45,8 @@ public class LiteMotto extends JavaPlugin {
         }
         
         // 注册API服务
-        getServer().getServicesManager().register(LiteMottoAPI.class, new LiteMottoAPI(), this, org.bukkit.plugin.ServicePriority.Normal);
+        this.liteMottoAPI = new LiteMottoAPI();
+        getServer().getServicesManager().register(LiteMottoAPI.class, this.liteMottoAPI, this, org.bukkit.plugin.ServicePriority.Normal);
     }
 
     @Override
@@ -103,15 +103,7 @@ public class LiteMotto extends JavaPlugin {
                         sender.sendMessage(PlayerJoinListener.colorize("&c你没有权限执行此命令。"));
                         return true;
                     }
-                    reloadConfig();
-                    // 获取已注册的 LiteMottoAPI 实例并重新初始化其生成器
-                    LiteMottoAPI api = getServer().getServicesManager().getRegistration(LiteMottoAPI.class).getProvider();
-                    if (api != null) {
-                        api.initMottoGenerator(); // 重新初始化生成器
-                        getLogger().info("LiteMotto: API 生成器已根据新配置重新初始化。");
-                    } else {
-                        getLogger().severe("LiteMotto: 无法获取 LiteMottoAPI 实例，API 生成器未能重新初始化。");
-                    }
+                    performReload();
                     sender.sendMessage(PlayerJoinListener.colorize("&aLiteMotto 配置已重载。"));
                     DebugManager.sendDebugMessage("&a插件配置已由 &f" + sender.getName() + " &a重载。");
                     return true;
@@ -157,5 +149,20 @@ public class LiteMotto extends JavaPlugin {
     
     public UpdateChecker getUpdateChecker() {
         return updateChecker;
+    }
+
+    /**
+     * 执行插件重载逻辑。
+     * 重新加载配置文件，并重新初始化 API 生成器。
+     */
+    public void performReload() {
+        reloadConfig();
+        // 重新初始化 API 生成器
+        if (this.liteMottoAPI != null) {
+            this.liteMottoAPI.initMottoGenerator(); // 重新初始化生成器
+            getLogger().info("LiteMotto: 插件配置已重载，API 生成器已重新初始化。");
+        } else {
+            getLogger().severe("LiteMotto: LiteMottoAPI 实例未初始化，API 生成器未能重新初始化。");
+        }
     }
 }
