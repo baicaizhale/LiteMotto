@@ -1,3 +1,8 @@
+# 请非新手服主不要使用我公开在config.yml的key了，我的cloudflare账号每天都是透支的
+# 还有这消耗量明显不对好吧，bstats记录的服务器日活就那么几个一天怎么可能用到10k，明显是有人拿我公开的key用在其他地方了
+# 我公开key的初衷是让不会创建key的服主也能开箱即用，而不是门户开放
+
+
 
 <img width="250" height="250" alt="497126858-f3d0c38b-29f8-4b50-90ed-fb7b8c17e209" src="https://github.com/user-attachments/assets/d623d871-b510-4471-9e76-79964b532baf" />
 
@@ -363,6 +368,7 @@ LiteMotto/
 
 本插件与 Cloudflare AI 官方无直接关联，仅为个人项目。
 ![Bstats](https://bstats.org/signatures/bukkit/LiteMotto.svg)
+
 
 
 
