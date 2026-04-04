@@ -1,5 +1,5 @@
 # 配置文件版本 (请勿修改)
-version: "4.2.5"
+version: 4.2.6
 
 # API 提供商选择 (可选值: cloudflare, siliconflow)
 api-provider: "cloudflare"
@@ -13,7 +13,7 @@ api-key: "GuSsLv7QIFEdVHRup9sheAxq2x-xxGfS-GEVNv6v"  # Cloudflare API Key
 
 # 当使用Cloudflare API时适用的模型
 # 无需修改 (不同的模型可能导致奇奇怪怪的bug,如果遇到不兼容模型请提交issue)
-model: "@cf/openai/gpt-oss-120b"
+model: "@cf/moonshotai/kimi-k2.5"
 
 # 硅基流动 API 配置
 siliconflow:
